@@ -7,7 +7,7 @@
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Segoe UI', Cairo, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     body {
       background-color: #f4f7f6;
@@ -68,6 +68,12 @@
     .btn:hover {
       background-color: #cc0000;
     }
+    .btn-login {
+      background-color: #007bff;
+    }
+    .btn-login:hover {
+      background-color: #0056b3;
+    }
     .btn-reset {
       background-color: #6c757d;
     }
@@ -93,6 +99,16 @@
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
+      text-align: center;
+    }
+    .student-welcome {
+      background-color: #e6f4ea;
+      border: 1px solid #b7e1cd;
+      color: #137333;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-weight: bold;
       text-align: center;
     }
     .vodafone-number {
@@ -157,6 +173,23 @@
       position: sticky;
       top: 0;
     }
+    .divider {
+      text-align: center;
+      margin: 15px 0;
+      color: #777;
+      font-size: 13px;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background-color: #ccc;
+    }
+    .divider::before { right: 0; }
+    .divider::after { left: 0; }
   </style>
 </head>
 <body>
@@ -166,9 +199,15 @@
 
   <div class="card">
     
-    <!-- الخطوة 1: استمارة التسجيل -->
+    <!-- الخطوة 1: استمارة التسجيل أو دخول مشترك سابق -->
     <div id="step1" class="step active">
-      <h2>تسجيل بيانات كورس تعليم البرمجة مع مستر روماني رؤوف </h2>
+      <h2>تسجيل البيانات</h2>
+
+      <!-- خيار تسجيل الدخول للمشتركين المسجلين مسبقاً -->
+      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
+
+      <div class="divider">أو تسجيل جديد</div>
+
       <form id="registrationForm">
         <div class="form-group">
           <label>الاسم بالكامل:</label>
@@ -204,6 +243,8 @@
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
       
+      <div id="welcomeMessage" class="student-welcome" style="display: none;"></div>
+
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
@@ -263,7 +304,32 @@
   <script>
     let studentData = {};
 
-    // الانتقال للخطوة الثانية + التحقق من التكرار
+    // تسجيل الدخول للمشترك السابق بالرقم القومي
+    function loginByNationalId() {
+      const nationalIdInput = prompt("أدخل الرقم القومي المسجل مسبقاً (14 رقم):");
+      
+      if (!nationalIdInput) return;
+
+      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput.trim());
+
+      if (existingUser) {
+        studentData = { ...existingUser };
+        
+        // عرض رسالة ترحيب بالطالب في صفحة الدفع
+        const welcomeDiv = document.getElementById('welcomeMessage');
+        welcomeDiv.innerText = `مرحباً بك مجدداً يا ${studentData.name}`;
+        welcomeDiv.style.display = 'block';
+
+        // الانتقال المباشر لصفحة الدفع (الخطوة 2)
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById('step2').classList.add('active');
+      } else {
+        alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديدة أولاً.");
+      }
+    }
+
+    // الانتقال للخطوة الثانية لـ (تسجيل جديد)
     function goToStep2() {
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) {
@@ -278,8 +344,8 @@
       const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput);
 
       if (existingUser) {
-        alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسمالطالب:\n(${existingUser.name})`);
-        return; // منع المتابعة
+        alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم الطالب:\n(${existingUser.name})\nيمكنك استخدام زر "دخول مشترك سابق" بالخارج.`);
+        return;
       }
 
       // حفظ البيانات المؤقتة
@@ -289,6 +355,7 @@
       studentData.school = document.getElementById('school').value.trim();
       studentData.grade = document.getElementById('grade').value;
 
+      document.getElementById('welcomeMessage').style.display = 'none';
       document.getElementById('step1').classList.remove('active');
       document.getElementById('step2').classList.add('active');
     }
@@ -300,22 +367,27 @@
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
       studentData.date = new Date().toLocaleString('ar-EG');
 
-      // جلب البيانات القديمة وإضافة الطالب الجديد
       let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      subscribers.push(studentData);
+      
+      // التحديث أو الإضافة
+      const index = subscribers.findIndex(s => s.nationalId === studentData.nationalId);
+      if (index !== -1) {
+        subscribers[index] = studentData; // تحديث رقم المحول وتاريخ الدفع إذا كان مسجلاً سابقاً
+      } else {
+        subscribers.push(studentData); // إضافة مشترك جديد
+      }
 
-      // حفظ البيانات القائمة دون المساس بها
       localStorage.setItem('subscribers', JSON.stringify(subscribers));
 
-      // الانتقال للخطوة الأخيرة
       document.getElementById('step2').classList.remove('active');
       document.getElementById('step3').classList.add('active');
     });
 
-    // إعادة ضبط النموذج لتسجيل جديد (دون مسح البيانات المكتسبة)
+    // إعادة ضبط النموذج لتسجيل جديد
     function resetForm() {
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentForm').reset();
+      document.getElementById('welcomeMessage').style.display = 'none';
       studentData = {};
 
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
@@ -359,7 +431,7 @@
             <td>${sub.phone}</td>
             <td>${sub.school}</td>
             <td>${sub.grade}</td>
-            <td>${sub.senderPhone}</td>
+            <td>${sub.senderPhone || '-'}</td>
           </tr>
         `;
         tbody.innerHTML += row;
@@ -376,7 +448,7 @@
 
       let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,رقم المحول منه,التاريخ\n";
       subscribers.forEach(s => {
-        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.senderPhone}","${s.date}"\n`;
+        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.senderPhone || ''}","${s.date || ''}"\n`;
       });
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
