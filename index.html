@@ -10,7 +10,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     body {
-      background-image: url ="https://drive.google.com/file/d/10EJdbNiFqO0mHnCTnn2OlvmpLpmjh-VZ/view?usp=sharing";
       background-color: #f4f7f6;
       display: flex;
       justify-content: center;
@@ -24,10 +23,24 @@
       background: #ffffff;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
       width: 100%;
       max-width: 500px;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* إضافة صورة الخلفية لصفحة البيانات وصفحة الدفع */
+    #step1, #step2 {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
+                        url('https://lh3.googleusercontent.com/d/10EJdbNiFqO0mHnCTnn2OlvmpLpmjh-VZ');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
     h2 {
       text-align: center;
       color: #333;
@@ -40,7 +53,7 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
-      color: #555;
+      color: #333;
     }
     input, select {
       width: 100%;
@@ -48,6 +61,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.95);
     }
     input:focus, select:focus {
       outline: none;
@@ -95,7 +109,7 @@
       display: block;
     }
     .payment-info {
-      background-color: #ffe6e6;
+      background-color: rgba(255, 230, 230, 0.95);
       border: 1px solid #ffb3b3;
       padding: 15px;
       border-radius: 8px;
@@ -103,7 +117,7 @@
       text-align: center;
     }
     .student-welcome {
-      background-color: #e6f4ea;
+      background-color: rgba(230, 244, 234, 0.95);
       border: 1px solid #b7e1cd;
       color: #137333;
       padding: 10px;
@@ -177,17 +191,18 @@
     .divider {
       text-align: center;
       margin: 15px 0;
-      color: #777;
+      color: #444;
       font-size: 13px;
+      font-weight: bold;
       position: relative;
     }
     .divider::before, .divider::after {
       content: "";
       position: absolute;
       top: 50%;
-      width: 40%;
+      width: 38%;
       height: 1px;
-      background-color: #ccc;
+      background-color: #aaa;
     }
     .divider::before { right: 0; }
     .divider::after { left: 0; }
@@ -200,11 +215,11 @@
 
   <div class="card">
     
-    <!-- الخطوة 1: استمارة التسجيل أو دخول مشترك سابق -->
+    <!-- الخطوة 1: استمارة التسجيل -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات</h2>
 
-      <!-- خيار تسجيل الدخول للمشتركين المسجلين مسبقاً -->
+      <!-- دخول مشترك سابق -->
       <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
 
       <div class="divider">أو تسجيل جديد</div>
@@ -249,7 +264,7 @@
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
-        <p style="font-size: 13px; color: #666;">بعد إتمام التحويل، أدخل الرقم الذي قمت بالتحويل منه بالأسفل لمراجعة الطلب وتأكيد الحجز.</p>
+        <p style="font-size: 13px; color: #555;">بعد إتمام التحويل، أدخل الرقم الذي قمت بالتحويل منه بالأسفل لمراجعة الطلب وتأكيد الحجز.</p>
       </div>
 
       <form id="paymentForm">
@@ -317,12 +332,10 @@
       if (existingUser) {
         studentData = { ...existingUser };
         
-        // عرض رسالة ترحيب بالطالب في صفحة الدفع
         const welcomeDiv = document.getElementById('welcomeMessage');
         welcomeDiv.innerText = `مرحباً بك مجدداً يا ${studentData.name}`;
         welcomeDiv.style.display = 'block';
 
-        // الانتقال المباشر لصفحة الدفع (الخطوة 2)
         document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
         document.getElementById('step2').classList.add('active');
       } else {
@@ -339,8 +352,6 @@
       }
 
       const nationalIdInput = document.getElementById('nationalId').value.trim();
-
-      // التحقق مما إذا كان الرقم القومي مسجلاً مسبقاً
       const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
       const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput);
 
@@ -349,7 +360,6 @@
         return;
       }
 
-      // حفظ البيانات المؤقتة
       studentData.name = document.getElementById('name').value.trim();
       studentData.nationalId = nationalIdInput;
       studentData.phone = document.getElementById('phone').value.trim();
@@ -370,12 +380,11 @@
 
       let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
       
-      // التحديث أو الإضافة
       const index = subscribers.findIndex(s => s.nationalId === studentData.nationalId);
       if (index !== -1) {
-        subscribers[index] = studentData; // تحديث رقم المحول وتاريخ الدفع إذا كان مسجلاً سابقاً
+        subscribers[index] = studentData;
       } else {
-        subscribers.push(studentData); // إضافة مشترك جديد
+        subscribers.push(studentData);
       }
 
       localStorage.setItem('subscribers', JSON.stringify(subscribers));
