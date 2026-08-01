@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل وتأكيد الاشتراك في المحاضرة</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      position: relative;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #e60000; /* لون فودافون */
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 5px;
+    }
+    .btn:hover {
+      background-color: #cc0000;
+    }
+    .btn-reset {
+      background-color: #6c757d;
+    }
+    .btn-reset:hover {
+      background-color: #5a6268;
+    }
+    .btn-secondary {
+      background-color: #28a745;
+      margin-top: 10px;
+    }
+    .btn-secondary:hover {
+      background-color: #218838;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .payment-info {
+      background-color: #ffe6e6;
+      border: 1px solid #ffb3b3;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .vodafone-number {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e60000;
+      direction: ltr;
+      display: block;
+      margin: 10px 0;
+    }
+    .link-box {
+      background-color: #e6f7ff;
+      border: 1px solid #91d5ff;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .teams-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 20px;
+      background-color: #464eb8;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .teams-btn:hover {
+      background-color: #3b429f;
+    }
+    /* زر المشتركين للإدارة */
+    .admin-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      padding: 8px 15px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .table-container {
+      overflow-x: auto;
+      max-height: 300px;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      position: sticky;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- زر عرض المشتركين للإدارة -->
+  <button class="admin-btn" onclick="openAdminPanel()">عرض المشتركين 🔒</button>
+
+  <div class="card">
+    
+    <!-- الخطوة 1: استمارة التسجيل -->
+    <div id="step1" class="step active">
+      <h2>تسجيل البيانات</h2>
+      <form id="registrationForm">
+        <div class="form-group">
+          <label>الاسم بالكامل:</label>
+          <input type="text" id="name" required placeholder="أدخل اسمك رباعي">
+        </div>
+        <div class="form-group">
+          <label>الرقم القومي:</label>
+          <input type="text" id="nationalId" pattern="[0-9]{14}" title="الرقم القومي مكون من 14 رقم" required placeholder="أدخل 14 رقم">
+        </div>
+        <div class="form-group">
+          <label>رقم التليفون (الواتساب):</label>
+          <input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>المدرسة:</label>
+          <input type="text" id="school" required placeholder="اسم مدرستك">
+        </div>
+        <div class="form-group">
+          <label>الصف الدراسي:</label>
+          <select id="grade" required>
+            <option value="">اختر الصف الدراسي</option>
+            <option value="الأول الثانوي">الأول الثانوي</option>
+            <option value="الثاني الثانوي">الثاني الثانوي</option>
+            <option value="الثالث الثانوي">الثالث الثانوي</option>
+          </select>
+        </div>
+        <button type="button" class="btn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
+        <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات (بدء تسجيل جديد)</button>
+      </form>
+    </div>
+
+    <!-- الخطوة 2: تعليمات الدفع وإدخال رقم المحول -->
+    <div id="step2" class="step">
+      <h2>الدفع عبر فودافون كاش</h2>
+      
+      <div class="payment-info">
+        <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
+        <span class="vodafone-number">01080963679</span>
+        <p style="font-size: 13px; color: #666;">بعد إتمام التحويل، أدخل الرقم الذي قمت بالتحويل منه بالأسفل لمراجعة الطلب وتأكيد الحجز.</p>
+      </div>
+
+      <form id="paymentForm">
+        <div class="form-group">
+          <label>رقم الموبايل المحول منه:</label>
+          <input type="tel" id="senderPhone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
+        </div>
+        <button type="submit" class="btn">تأكيد الدفع واستلام رابط المحاضرة</button>
+        <button type="button" class="btn btn-reset" onclick="resetForm()">إلغاء وبدء تسجيل جديد</button>
+      </form>
+    </div>
+
+    <!-- الخطوة 3: عرض رابط المحاضرة -->
+    <div id="step3" class="step">
+      <h2>تم التسجيل بنجاح!</h2>
+      <div class="link-box">
+        <p>شكراً لك، تم حفظ بياناتك بنجاح.</p>
+        <p>يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
+        <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">
+          الانضمام للمحاضرة على Teams
+        </a>
+      </div>
+      <button type="button" class="btn btn-reset" style="margin-top: 15px;" onclick="resetForm()">تسجيل طالب آخر</button>
+    </div>
+
+    <!-- لوحة تحكم المشتركين (خاصة بالإدارة) -->
+    <div id="adminStep" class="step">
+      <h2>قائمة المشتركين المسجلين</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم</th>
+              <th>الرقم القومي</th>
+              <th>التليفون</th>
+              <th>المدرسة</th>
+              <th>الصف</th>
+              <th>رقم المحول</th>
+            </tr>
+          </thead>
+          <tbody id="subscribersTable">
+            <!-- البيانات تضاف هنا -->
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-secondary" onclick="exportToCSV()">تحميل البيانات (Excel/CSV)</button>
+      <button class="btn btn-reset" onclick="closeAdminPanel()" style="background-color: #333;">العودة للصفحة الرئيسية</button>
+    </div>
+
+  </div>
+
+  <script>
+    let studentData = {};
+
+    // الانتقال للخطوة الثانية + التحقق من التكرار
+    function goToStep2() {
+      const form = document.getElementById('registrationForm');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const nationalIdInput = document.getElementById('nationalId').value.trim();
+
+      // التحقق مما إذا كان الرقم القومي مسجلاً مسبقاً
+      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput);
+
+      if (existingUser) {
+        alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسمالطالب:\n(${existingUser.name})`);
+        return; // منع المتابعة
+      }
+
+      // حفظ البيانات المؤقتة
+      studentData.name = document.getElementById('name').value.trim();
+      studentData.nationalId = nationalIdInput;
+      studentData.phone = document.getElementById('phone').value.trim();
+      studentData.school = document.getElementById('school').value.trim();
+      studentData.grade = document.getElementById('grade').value;
+
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
+    }
+
+    // تأكيد الدفع وحفظ البيانات
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      studentData.senderPhone = document.getElementById('senderPhone').value.trim();
+      studentData.date = new Date().toLocaleString('ar-EG');
+
+      // جلب البيانات القديمة وإضافة الطالب الجديد
+      let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+      subscribers.push(studentData);
+
+      // حفظ البيانات القائمة دون المساس بها
+      localStorage.setItem('subscribers', JSON.stringify(subscribers));
+
+      // الانتقال للخطوة الأخيرة
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step3').classList.add('active');
+    });
+
+    // إعادة ضبط النموذج لتسجيل جديد (دون مسح البيانات المكتسبة)
+    function resetForm() {
+      document.getElementById('registrationForm').reset();
+      document.getElementById('paymentForm').reset();
+      studentData = {};
+
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById('step1').classList.add('active');
+    }
+
+    // فتح لوحة التحكم بكلمة المرور
+    function openAdminPanel() {
+      const password = prompt("أدخل كلمة السر لعرض المشتركين:");
+      if (password === "852456") {
+        renderSubscribers();
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById('adminStep').classList.add('active');
+      } else if (password !== null) {
+        alert("كلمة السر غير صحيحة!");
+      }
+    }
+
+    // إغلاق لوحة التحكم
+    function closeAdminPanel() {
+      resetForm();
+    }
+
+    // عرض المشتركين في الجدول
+    function renderSubscribers() {
+      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+      const tbody = document.getElementById('subscribersTable');
+      tbody.innerHTML = '';
+
+      if (subscribers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
+        return;
+      }
+
+      subscribers.forEach((sub, index) => {
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${sub.name}</td>
+            <td>${sub.nationalId}</td>
+            <td>${sub.phone}</td>
+            <td>${sub.school}</td>
+            <td>${sub.grade}</td>
+            <td>${sub.senderPhone}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // تصدير البيانات إلى CSV
+    function exportToCSV() {
+      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+      if (subscribers.length === 0) {
+        alert("لا توجد بيانات لتصديرها!");
+        return;
+      }
+
+      let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,رقم المحول منه,التاريخ\n";
+      subscribers.forEach(s => {
+        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.senderPhone}","${s.date}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "قائمة_المشتركين.csv";
+      link.click();
+    }
+  </script>
+</body>
+</html>
