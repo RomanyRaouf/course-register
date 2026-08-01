@@ -67,6 +67,13 @@
       outline: none;
       border-color: #007bff;
     }
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
     .btn {
       width: 100%;
       padding: 12px;
@@ -175,12 +182,13 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 12px;
     }
     th, td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
+      white-space: nowrap;
     }
     th {
       background-color: #007bff;
@@ -217,7 +225,7 @@
     
     <!-- الخطوة 1: استمارة التسجيل -->
     <div id="step1" class="step active">
-      <h2>كورس تعلم البرمجة مع مستر روماني رؤوف سجل بياناتك بدقة </h2>
+      <h2>كورس تعلم البرمجة (معا بأقصر الطرق نصل للقمة ) مع مستر روماني رؤوف سجل بياناتك واختر الميعاد</h2>
 
       <!-- دخول مشترك سابق -->
       <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
@@ -250,6 +258,30 @@
             <option value="الثالث الثانوي">الثالث الثانوي</option>
           </select>
         </div>
+
+        <!-- تجميع خيارات الميعاد -->
+        <div class="form-group">
+          <label>عدد المرات في الأسبوع:</label>
+          <select id="frequency" required>
+            <option value="">اختر عدد الحصص/المحاضرات أسبوعياً</option>
+            <option value="مرة واحدة أسبوعياً">مرة واحدة أسبوعياً</option>
+            <option value="مرتان أسبوعياً">مرتان أسبوعياً</option>
+            <option value="3 مرات أسبوعياً">3 مرات أسبوعياً</option>
+            <option value="4 مرات أسبوعياً">4 مرات أسبوعياً</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>تاريخ البدء:</label>
+            <input type="date" id="lectureDate" required>
+          </div>
+          <div class="form-group">
+            <label>الوقت / التوقيت:</label>
+            <input type="time" id="lectureTime" required>
+          </div>
+        </div>
+
         <button type="button" class="btn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
         <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات (بدء تسجيل جديد)</button>
       </form>
@@ -281,7 +313,7 @@
     <div id="step3" class="step">
       <h2>تم التسجيل بنجاح!</h2>
       <div class="link-box">
-        <p>شكراً لك، تم حفظ بياناتك بنجاح.</p>
+        <p>شكراً لك، تم حفظ بياناتك وميعادك بنجاح.</p>
         <p>يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
         <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">
           الانضمام للمحاضرة على Teams
@@ -292,7 +324,7 @@
 
     <!-- لوحة تحكم المشتركين (خاصة بالإدارة) -->
     <div id="adminStep" class="step">
-      <h2>قائمة المشتركين المسجلين</h2>
+      <h2>قائمة المشتركين والمواعيد</h2>
       <div class="table-container">
         <table>
           <thead>
@@ -303,6 +335,9 @@
               <th>التليفون</th>
               <th>المدرسة</th>
               <th>الصف</th>
+              <th>التكرار الأسبوعي</th>
+              <th>التاريخ</th>
+              <th>الوقت</th>
               <th>رقم المحول</th>
             </tr>
           </thead>
@@ -360,11 +395,15 @@
         return;
       }
 
+      // حفظ البيانات الأساسية وخيارات الميعاد
       studentData.name = document.getElementById('name').value.trim();
       studentData.nationalId = nationalIdInput;
       studentData.phone = document.getElementById('phone').value.trim();
       studentData.school = document.getElementById('school').value.trim();
       studentData.grade = document.getElementById('grade').value;
+      studentData.frequency = document.getElementById('frequency').value;
+      studentData.lectureDate = document.getElementById('lectureDate').value;
+      studentData.lectureTime = document.getElementById('lectureTime').value;
 
       document.getElementById('welcomeMessage').style.display = 'none';
       document.getElementById('step1').classList.remove('active');
@@ -428,7 +467,7 @@
       tbody.innerHTML = '';
 
       if (subscribers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
         return;
       }
 
@@ -441,6 +480,9 @@
             <td>${sub.phone}</td>
             <td>${sub.school}</td>
             <td>${sub.grade}</td>
+            <td>${sub.frequency || '-'}</td>
+            <td>${sub.lectureDate || '-'}</td>
+            <td>${sub.lectureTime || '-'}</td>
             <td>${sub.senderPhone || '-'}</td>
           </tr>
         `;
@@ -456,15 +498,15 @@
         return;
       }
 
-      let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,رقم المحول منه,التاريخ\n";
+      let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,عدد المرات,تاريخ البدء,الوقت,رقم المحول,تاريخ التسجيل\n";
       subscribers.forEach(s => {
-        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.senderPhone || ''}","${s.date || ''}"\n`;
+        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.frequency || ''}","${s.lectureDate || ''}","${s.lectureTime || ''}","${s.senderPhone || ''}","${s.date || ''}"\n`;
       });
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = "قائمة_المشتركين.csv";
+      link.download = "قائمة_المشتركين_والمواعيد.csv";
       link.click();
     }
   </script>
