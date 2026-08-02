@@ -29,8 +29,6 @@
       position: relative;
       overflow: hidden;
     }
-
-    /* إضافة صورة الخلفية لصفحة البيانات وصفحة الدفع */
     #step1, #step2 {
       background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
                         url('https://lh3.googleusercontent.com/d/10EJdbNiFqO0mHnCTnn2OlvmpLpmjh-VZ');
@@ -40,7 +38,6 @@
       padding: 20px;
       border-radius: 10px;
     }
-
     h2 {
       text-align: center;
       color: #333;
@@ -77,7 +74,7 @@
     .btn {
       width: 100%;
       padding: 12px;
-      background-color: #e60000; /* لون فودافون */
+      background-color: #e60000;
       color: white;
       border: none;
       border-radius: 6px;
@@ -87,34 +84,16 @@
       transition: background 0.3s;
       margin-top: 5px;
     }
-    .btn:hover {
-      background-color: #cc0000;
-    }
-    .btn-login {
-      background-color: #007bff;
-    }
-    .btn-login:hover {
-      background-color: #0056b3;
-    }
-    .btn-reset {
-      background-color: #6c757d;
-    }
-    .btn-reset:hover {
-      background-color: #5a6268;
-    }
-    .btn-secondary {
-      background-color: #28a745;
-      margin-top: 10px;
-    }
-    .btn-secondary:hover {
-      background-color: #218838;
-    }
-    .step {
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
+    .btn:hover { background-color: #cc0000; }
+    .btn:disabled { background-color: #aaa; cursor: not-allowed; }
+    .btn-login { background-color: #007bff; }
+    .btn-login:hover { background-color: #0056b3; }
+    .btn-reset { background-color: #6c757d; }
+    .btn-reset:hover { background-color: #5a6268; }
+    .btn-secondary { background-color: #28a745; margin-top: 10px; }
+    .btn-secondary:hover { background-color: #218838; }
+    .step { display: none; }
+    .step.active { display: block; }
     .payment-info {
       background-color: rgba(255, 230, 230, 0.95);
       border: 1px solid #ffb3b3;
@@ -158,10 +137,7 @@
       border-radius: 6px;
       font-weight: bold;
     }
-    .teams-btn:hover {
-      background-color: #3b429f;
-    }
-    /* زر المشتركين للإدارة */
+    .teams-btn:hover { background-color: #3b429f; }
     .admin-btn {
       position: absolute;
       top: 15px;
@@ -190,12 +166,7 @@
       text-align: center;
       white-space: nowrap;
     }
-    th {
-      background-color: #007bff;
-      color: white;
-      position: sticky;
-      top: 0;
-    }
+    th { background-color: #007bff; color: white; position: sticky; top: 0; }
     .divider {
       text-align: center;
       margin: 15px 0;
@@ -218,16 +189,14 @@
 </head>
 <body>
 
-  <!-- زر عرض المشتركين للإدارة -->
+  <!-- زر لوحة الإدارة -->
   <button class="admin-btn" onclick="openAdminPanel()">عرض المشتركين 🔒</button>
 
   <div class="card">
     
-    <!-- الخطوة 1: استمارة التسجيل -->
+    <!-- الخطوة 1: استمارة التسجيل والميعاد -->
     <div id="step1" class="step active">
-      <h2>كورس تعلم البرمجة (معا بأقصر الطرق نصل للقمة ) مع مستر روماني رؤوف سجل بياناتك واختر الميعاد</h2>
-
-      <!-- دخول مشترك سابق -->
+      <h2>تسجيل البيانات والميعاد</h2>
       <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
 
       <div class="divider">أو تسجيل جديد</div>
@@ -258,19 +227,16 @@
             <option value="الثالث الثانوي">الثالث الثانوي</option>
           </select>
         </div>
-
-        <!-- تجميع خيارات الميعاد -->
         <div class="form-group">
           <label>عدد المرات في الأسبوع:</label>
           <select id="frequency" required>
-            <option value="">اختر عدد الحصص/المحاضرات أسبوعياً</option>
+            <option value="">اختر عدد الحصص أسبوعياً</option>
             <option value="مرة واحدة أسبوعياً">مرة واحدة أسبوعياً</option>
             <option value="مرتان أسبوعياً">مرتان أسبوعياً</option>
             <option value="3 مرات أسبوعياً">3 مرات أسبوعياً</option>
             <option value="4 مرات أسبوعياً">4 مرات أسبوعياً</option>
           </select>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>تاريخ البدء:</label>
@@ -281,18 +247,15 @@
             <input type="time" id="lectureTime" required>
           </div>
         </div>
-
-        <button type="button" class="btn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
+        <button type="button" class="btn" id="nextBtn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
         <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات (بدء تسجيل جديد)</button>
       </form>
     </div>
 
-    <!-- الخطوة 2: تعليمات الدفع وإدخال رقم المحول -->
+    <!-- الخطوة 2: الدفع -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
-      
       <div id="welcomeMessage" class="student-welcome" style="display: none;"></div>
-
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
@@ -304,16 +267,16 @@
           <label>رقم الموبايل المحول منه:</label>
           <input type="tel" id="senderPhone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
         </div>
-        <button type="submit" class="btn">تأكيد الدفع واستلام رابط المحاضرة</button>
+        <button type="submit" class="btn" id="submitBtn">تأكيد الدفع واستلام رابط المحاضرة</button>
         <button type="button" class="btn btn-reset" onclick="resetForm()">إلغاء وبدء تسجيل جديد</button>
       </form>
     </div>
 
-    <!-- الخطوة 3: عرض رابط المحاضرة -->
+    <!-- الخطوة 3: الرابط -->
     <div id="step3" class="step">
       <h2>تم التسجيل بنجاح!</h2>
       <div class="link-box">
-        <p>شكراً لك، تم حفظ بياناتك وميعادك بنجاح.</p>
+        <p>شكراً لك، تم حفظ بياناتك وميعادك بنجاح في قاعدة البيانات.</p>
         <p>يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
         <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">
           الانضمام للمحاضرة على Teams
@@ -322,9 +285,9 @@
       <button type="button" class="btn btn-reset" style="margin-top: 15px;" onclick="resetForm()">تسجيل طالب آخر</button>
     </div>
 
-    <!-- لوحة تحكم المشتركين (خاصة بالإدارة) -->
+    <!-- لوحة تحكم الإدارة -->
     <div id="adminStep" class="step">
-      <h2>قائمة المشتركين والمواعيد</h2>
+      <h2>قائمة المشتركين والمواعيد السحابية</h2>
       <div class="table-container">
         <table>
           <thead>
@@ -335,14 +298,14 @@
               <th>التليفون</th>
               <th>المدرسة</th>
               <th>الصف</th>
-              <th>التكرار الأسبوعي</th>
+              <th>التكرار</th>
               <th>التاريخ</th>
               <th>الوقت</th>
               <th>رقم المحول</th>
             </tr>
           </thead>
           <tbody id="subscribersTable">
-            <!-- البيانات تضاف هنا -->
+            <!-- تحميل البيانات -->
           </tbody>
         </table>
       </div>
@@ -353,86 +316,113 @@
   </div>
 
   <script>
+    // رابط Google Apps Script الخاص بك
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxydONbMCQze8j_wOCSfZB0ChtG-YHChbuofK2VLSv0rAtpdirm-bW9jU7VuAPvrTb7/exec";
+
     let studentData = {};
 
-    // تسجيل الدخول للمشترك السابق بالرقم القومي
-    function loginByNationalId() {
+    // تسجيل دخول بالرقم القومي
+    async function loginByNationalId() {
       const nationalIdInput = prompt("أدخل الرقم القومي المسجل مسبقاً (14 رقم):");
-      
       if (!nationalIdInput) return;
 
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput.trim());
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const subscribers = await response.json();
+        const existingUser = subscribers.find(sub => String(sub.nationalId).trim() === nationalIdInput.trim());
 
-      if (existingUser) {
-        studentData = { ...existingUser };
-        
-        const welcomeDiv = document.getElementById('welcomeMessage');
-        welcomeDiv.innerText = `مرحباً بك مجدداً يا ${studentData.name}`;
-        welcomeDiv.style.display = 'block';
+        if (existingUser) {
+          studentData = { ...existingUser };
+          const welcomeDiv = document.getElementById('welcomeMessage');
+          welcomeDiv.innerText = `مرحباً بك مجدداً يا ${studentData.name}`;
+          welcomeDiv.style.display = 'block';
 
-        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-        document.getElementById('step2').classList.add('active');
-      } else {
-        alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديدة أولاً.");
+          document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+          document.getElementById('step2').classList.add('active');
+        } else {
+          alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديد أولاً.");
+        }
+      } catch (e) {
+        alert("حدث خطأ أثناء الاتصال بقاعدة البيانات!");
       }
     }
 
-    // الانتقال للخطوة الثانية لـ (تسجيل جديد)
-    function goToStep2() {
+    // الانتقال لخطوة الدفع
+    async function goToStep2() {
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
 
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.disabled = true;
+      nextBtn.innerText = "جاري التحقق...";
+
       const nationalIdInput = document.getElementById('nationalId').value.trim();
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput);
 
-      if (existingUser) {
-        alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم الطالب:\n(${existingUser.name})\nيمكنك استخدام زر "دخول مشترك سابق" بالخارج.`);
-        return;
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const subscribers = await response.json();
+        const existingUser = subscribers.find(sub => String(sub.nationalId).trim() === nationalIdInput);
+
+        if (existingUser) {
+          alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم الطالب:\n(${existingUser.name})\nيمكنك استخدام زر "دخول مشترك سابق".`);
+          nextBtn.disabled = false;
+          nextBtn.innerText = "التالي (متابعة الدفع)";
+          return;
+        }
+
+        studentData.name = document.getElementById('name').value.trim();
+        studentData.nationalId = nationalIdInput;
+        studentData.phone = document.getElementById('phone').value.trim();
+        studentData.school = document.getElementById('school').value.trim();
+        studentData.grade = document.getElementById('grade').value;
+        studentData.frequency = document.getElementById('frequency').value;
+        studentData.lectureDate = document.getElementById('lectureDate').value;
+        studentData.lectureTime = document.getElementById('lectureTime').value;
+
+        document.getElementById('welcomeMessage').style.display = 'none';
+        document.getElementById('step1').classList.remove('active');
+        document.getElementById('step2').classList.add('active');
+      } catch (e) {
+        alert("تأكد من الاتصال بالإنترنت أو صحة الإعدادات.");
+      } finally {
+        nextBtn.disabled = false;
+        nextBtn.innerText = "التالي (متابعة الدفع)";
       }
-
-      // حفظ البيانات الأساسية وخيارات الميعاد
-      studentData.name = document.getElementById('name').value.trim();
-      studentData.nationalId = nationalIdInput;
-      studentData.phone = document.getElementById('phone').value.trim();
-      studentData.school = document.getElementById('school').value.trim();
-      studentData.grade = document.getElementById('grade').value;
-      studentData.frequency = document.getElementById('frequency').value;
-      studentData.lectureDate = document.getElementById('lectureDate').value;
-      studentData.lectureTime = document.getElementById('lectureTime').value;
-
-      document.getElementById('welcomeMessage').style.display = 'none';
-      document.getElementById('step1').classList.remove('active');
-      document.getElementById('step2').classList.add('active');
     }
 
-    // تأكيد الدفع وحفظ البيانات
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    // تأكيد الدفع وإرسال البيانات للجدول
+    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "جاري حفظ البيانات...";
+
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
-      studentData.date = new Date().toLocaleString('ar-EG');
+      studentData.action = "add";
 
-      let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      
-      const index = subscribers.findIndex(s => s.nationalId === studentData.nationalId);
-      if (index !== -1) {
-        subscribers[index] = studentData;
-      } else {
-        subscribers.push(studentData);
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studentData)
+        });
+
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+      } catch (error) {
+        alert("حدث خطأ أثناء إرسال البيانات!");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
       }
-
-      localStorage.setItem('subscribers', JSON.stringify(subscribers));
-
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step3').classList.add('active');
     });
 
-    // إعادة ضبط النموذج لتسجيل جديد
+    // إعادة ضبط النموذج
     function resetForm() {
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentForm').reset();
@@ -443,70 +433,83 @@
       document.getElementById('step1').classList.add('active');
     }
 
-    // فتح لوحة التحكم بكلمة المرور
-    function openAdminPanel() {
+    // فتح لوحة الإدارة
+    async function openAdminPanel() {
       const password = prompt("أدخل كلمة السر لعرض المشتركين:");
       if (password === "852456") {
-        renderSubscribers();
         document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
         document.getElementById('adminStep').classList.add('active');
+        await renderSubscribers();
       } else if (password !== null) {
         alert("كلمة السر غير صحيحة!");
       }
     }
 
-    // إغلاق لوحة التحكم
     function closeAdminPanel() {
       resetForm();
     }
 
-    // عرض المشتركين في الجدول
-    function renderSubscribers() {
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+    // عرض المشتركين بالجدول
+    async function renderSubscribers() {
       const tbody = document.getElementById('subscribersTable');
-      tbody.innerHTML = '';
+      tbody.innerHTML = '<tr><td colspan="10">جاري تحميل البيانات من جوجل شيت...</td></tr>';
 
-      if (subscribers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
-        return;
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const subscribers = await response.json();
+        tbody.innerHTML = '';
+
+        if (subscribers.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="10">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
+          return;
+        }
+
+        subscribers.forEach((sub, index) => {
+          const row = `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${sub.name}</td>
+              <td>${sub.nationalId}</td>
+              <td>${sub.phone}</td>
+              <td>${sub.school}</td>
+              <td>${sub.grade}</td>
+              <td>${sub.frequency || '-'}</td>
+              <td>${sub.lectureDate || '-'}</td>
+              <td>${sub.lectureTime || '-'}</td>
+              <td>${sub.senderPhone || '-'}</td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="10">خطأ في جلب البيانات!</td></tr>';
       }
-
-      subscribers.forEach((sub, index) => {
-        const row = `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${sub.name}</td>
-            <td>${sub.nationalId}</td>
-            <td>${sub.phone}</td>
-            <td>${sub.school}</td>
-            <td>${sub.grade}</td>
-            <td>${sub.frequency || '-'}</td>
-            <td>${sub.lectureDate || '-'}</td>
-            <td>${sub.lectureTime || '-'}</td>
-            <td>${sub.senderPhone || '-'}</td>
-          </tr>
-        `;
-        tbody.innerHTML += row;
-      });
     }
 
-    // تصدير البيانات إلى CSV
-    function exportToCSV() {
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      if (subscribers.length === 0) {
-        alert("لا توجد بيانات لتصديرها!");
-        return;
-      }
+    // تصدير ملف CSV
+    async function exportToCSV() {
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const subscribers = await response.json();
 
-      let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,عدد المرات,تاريخ البدء,الوقت,رقم المحول,تاريخ التسجيل\n";
-      subscribers.forEach(s => {
-        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.frequency || ''}","${s.lectureDate || ''}","${s.lectureTime || ''}","${s.senderPhone || ''}","${s.date || ''}"\n`;
-      });
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "قائمة_المشتركين_والمواعيد.csv";
-      link.click();
+        if (subscribers.length === 0) {
+          alert("لا توجد بيانات لتصديرها!");
+          return;
+        }
+
+        let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,عدد المرات,تاريخ البدء,الوقت,رقم المحول\n";
+        subscribers.forEach(s => {
+          csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.frequency || ''}","${s.lectureDate || ''}","${s.lectureTime || ''}","${s.senderPhone || ''}"\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "قائمة_المشتركين.csv";
+        link.click();
+      } catch (e) {
+        alert("تعذر جلب البيانات لتصديرها!");
+      }
     }
   </script>
 </body>
