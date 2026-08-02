@@ -316,8 +316,8 @@
   </div>
 
   <script>
-    // رابط Google Apps Script الخاص بك
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxydONbMCQze8j_wOCSfZB0ChtG-YHChbuofK2VLSv0rAtpdirm-bW9jU7VuAPvrTb7/exec";
+    // رابط Google Apps Script الجديد
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyneLntapDtr_Xh91Pw3N2hsmhYdyVyWiUPoYLswkSIMpL6lF8acX7TNjeo0s4w3iXU/exec";
 
     let studentData = {};
 
@@ -363,13 +363,13 @@
 
       try {
         const response = await fetch(SCRIPT_URL);
+        if (!response.ok) throw new Error("استجابة الخادم غير صالحة");
+
         const subscribers = await response.json();
         const existingUser = subscribers.find(sub => String(sub.nationalId).trim() === nationalIdInput);
 
         if (existingUser) {
           alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم الطالب:\n(${existingUser.name})\nيمكنك استخدام زر "دخول مشترك سابق".`);
-          nextBtn.disabled = false;
-          nextBtn.innerText = "التالي (متابعة الدفع)";
           return;
         }
 
@@ -386,7 +386,8 @@
         document.getElementById('step1').classList.remove('active');
         document.getElementById('step2').classList.add('active');
       } catch (e) {
-        alert("تأكد من الاتصال بالإنترنت أو صحة الإعدادات.");
+        console.error("Fetch Error:", e);
+        alert("تأكد من إعدادات النشر (Deployment) في Google Apps Script واختيار (Anyone) للصلاحيات.");
       } finally {
         nextBtn.disabled = false;
         nextBtn.innerText = "التالي (متابعة الدفع)";
@@ -402,7 +403,6 @@
       submitBtn.innerText = "جاري حفظ البيانات...";
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
-      studentData.action = "add";
 
       try {
         await fetch(SCRIPT_URL, {
