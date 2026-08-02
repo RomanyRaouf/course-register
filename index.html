@@ -86,12 +86,8 @@
     }
     .btn:hover { background-color: #cc0000; }
     .btn:disabled { background-color: #aaa; cursor: not-allowed; }
-    .btn-login { background-color: #007bff; }
-    .btn-login:hover { background-color: #0056b3; }
     .btn-reset { background-color: #6c757d; }
     .btn-reset:hover { background-color: #5a6268; }
-    .btn-secondary { background-color: #28a745; margin-top: 10px; }
-    .btn-secondary:hover { background-color: #218838; }
     .step { display: none; }
     .step.active { display: block; }
     .payment-info {
@@ -100,16 +96,6 @@
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
-      text-align: center;
-    }
-    .student-welcome {
-      background-color: rgba(230, 244, 234, 0.95);
-      border: 1px solid #b7e1cd;
-      color: #137333;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-weight: bold;
       text-align: center;
     }
     .vodafone-number {
@@ -138,69 +124,15 @@
       font-weight: bold;
     }
     .teams-btn:hover { background-color: #3b429f; }
-    .admin-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      padding: 8px 15px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .table-container {
-      overflow-x: auto;
-      max-height: 300px;
-      margin-bottom: 15px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    th { background-color: #007bff; color: white; position: sticky; top: 0; }
-    .divider {
-      text-align: center;
-      margin: 15px 0;
-      color: #444;
-      font-size: 13px;
-      font-weight: bold;
-      position: relative;
-    }
-    .divider::before, .divider::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 38%;
-      height: 1px;
-      background-color: #aaa;
-    }
-    .divider::before { right: 0; }
-    .divider::after { left: 0; }
   </style>
 </head>
 <body>
-
-  <!-- زر لوحة الإدارة -->
-  <button class="admin-btn" onclick="openAdminPanel()">عرض المشتركين 🔒</button>
 
   <div class="card">
     
     <!-- الخطوة 1: استمارة التسجيل والميعاد -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
-      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
-
-      <div class="divider">أو تسجيل جديد</div>
-
       <form id="registrationForm">
         <div class="form-group">
           <label>الاسم بالكامل:</label>
@@ -247,15 +179,14 @@
             <input type="time" id="lectureTime" required>
           </div>
         </div>
-        <button type="button" class="btn" id="nextBtn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
-        <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات (بدء تسجيل جديد)</button>
+        <button type="button" class="btn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
+        <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات</button>
       </form>
     </div>
 
     <!-- الخطوة 2: الدفع -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
-      <div id="welcomeMessage" class="student-welcome" style="display: none;"></div>
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
@@ -272,11 +203,11 @@
       </form>
     </div>
 
-    <!-- الخطوة 3: الرابط -->
+    <!-- الخطوة 3: رابط المحاضرة -->
     <div id="step3" class="step">
       <h2>تم التسجيل بنجاح!</h2>
       <div class="link-box">
-        <p>شكراً لك، تم حفظ بياناتك وميعادك بنجاح في قاعدة البيانات.</p>
+        <p>شكراً لك، تم حفظ بياناتك وميعادك بنجاح.</p>
         <p>يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
         <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">
           الانضمام للمحاضرة على Teams
@@ -285,137 +216,63 @@
       <button type="button" class="btn btn-reset" style="margin-top: 15px;" onclick="resetForm()">تسجيل طالب آخر</button>
     </div>
 
-    <!-- لوحة تحكم الإدارة -->
-    <div id="adminStep" class="step">
-      <h2>قائمة المشتركين والمواعيد السحابية</h2>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>الاسم</th>
-              <th>الرقم القومي</th>
-              <th>التليفون</th>
-              <th>المدرسة</th>
-              <th>الصف</th>
-              <th>التكرار</th>
-              <th>التاريخ</th>
-              <th>الوقت</th>
-              <th>رقم المحول</th>
-            </tr>
-          </thead>
-          <tbody id="subscribersTable">
-            <!-- تحميل البيانات -->
-          </tbody>
-        </table>
-      </div>
-      <button class="btn btn-secondary" onclick="exportToCSV()">تحميل البيانات (Excel/CSV)</button>
-      <button class="btn btn-reset" onclick="closeAdminPanel()" style="background-color: #333;">العودة للصفحة الرئيسية</button>
-    </div>
-
   </div>
 
   <script>
-    // رابط Google Apps Script الجديد
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyneLntapDtr_Xh91Pw3N2hsmhYdyVyWiUPoYLswkSIMpL6lF8acX7TNjeo0s4w3iXU/exec";
-
     let studentData = {};
+    const FORMSPREE_URL = "https://formspree.io/f/mnjekyrj";
 
-    // تسجيل دخول بالرقم القومي
-    async function loginByNationalId() {
-      const nationalIdInput = prompt("أدخل الرقم القومي المسجل مسبقاً (14 رقم):");
-      if (!nationalIdInput) return;
-
-      try {
-        const response = await fetch(SCRIPT_URL);
-        const subscribers = await response.json();
-        const existingUser = subscribers.find(sub => String(sub.nationalId).trim() === nationalIdInput.trim());
-
-        if (existingUser) {
-          studentData = { ...existingUser };
-          const welcomeDiv = document.getElementById('welcomeMessage');
-          welcomeDiv.innerText = `مرحباً بك مجدداً يا ${studentData.name}`;
-          welcomeDiv.style.display = 'block';
-
-          document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-          document.getElementById('step2').classList.add('active');
-        } else {
-          alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديد أولاً.");
-        }
-      } catch (e) {
-        alert("حدث خطأ أثناء الاتصال بقاعدة البيانات!");
-      }
-    }
-
-    // الانتقال لخطوة الدفع
-    async function goToStep2() {
+    // الانتقال للخطوة الثانية وتجميع البيانات الأولية
+    function goToStep2() {
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
 
-      const nextBtn = document.getElementById('nextBtn');
-      nextBtn.disabled = true;
-      nextBtn.innerText = "جاري التحقق...";
+      studentData = {
+        name: document.getElementById('name').value.trim(),
+        nationalId: document.getElementById('nationalId').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        school: document.getElementById('school').value.trim(),
+        grade: document.getElementById('grade').value,
+        frequency: document.getElementById('frequency').value,
+        lectureDate: document.getElementById('lectureDate').value,
+        lectureTime: document.getElementById('lectureTime').value
+      };
 
-      const nationalIdInput = document.getElementById('nationalId').value.trim();
-
-      try {
-        const response = await fetch(SCRIPT_URL);
-        if (!response.ok) throw new Error("استجابة الخادم غير صالحة");
-
-        const subscribers = await response.json();
-        const existingUser = subscribers.find(sub => String(sub.nationalId).trim() === nationalIdInput);
-
-        if (existingUser) {
-          alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم الطالب:\n(${existingUser.name})\nيمكنك استخدام زر "دخول مشترك سابق".`);
-          return;
-        }
-
-        studentData.name = document.getElementById('name').value.trim();
-        studentData.nationalId = nationalIdInput;
-        studentData.phone = document.getElementById('phone').value.trim();
-        studentData.school = document.getElementById('school').value.trim();
-        studentData.grade = document.getElementById('grade').value;
-        studentData.frequency = document.getElementById('frequency').value;
-        studentData.lectureDate = document.getElementById('lectureDate').value;
-        studentData.lectureTime = document.getElementById('lectureTime').value;
-
-        document.getElementById('welcomeMessage').style.display = 'none';
-        document.getElementById('step1').classList.remove('active');
-        document.getElementById('step2').classList.add('active');
-      } catch (e) {
-        console.error("Fetch Error:", e);
-        alert("تأكد من إعدادات النشر (Deployment) في Google Apps Script واختيار (Anyone) للصلاحيات.");
-      } finally {
-        nextBtn.disabled = false;
-        nextBtn.innerText = "التالي (متابعة الدفع)";
-      }
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
     }
 
-    // تأكيد الدفع وإرسال البيانات للجدول
+    // إرسال كافة البيانات إلى Formspree عند تأكيد الدفع
     document.getElementById('paymentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerText = "جاري حفظ البيانات...";
+      submitBtn.innerText = "جاري حفظ البيانات وتأكيد الحجز...";
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
       try {
-        await fetch(SCRIPT_URL, {
+        const response = await fetch(FORMSPREE_URL, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify(studentData)
         });
 
-        document.getElementById('step2').classList.remove('active');
-        document.getElementById('step3').classList.add('active');
+        if (response.ok) {
+          document.getElementById('step2').classList.remove('active');
+          document.getElementById('step3').classList.add('active');
+        } else {
+          alert("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
+        }
       } catch (error) {
-        alert("حدث خطأ أثناء إرسال البيانات!");
+        alert("تأكد من الاتصال بالإنترنت حاول مجدداً.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
@@ -426,90 +283,10 @@
     function resetForm() {
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentForm').reset();
-      document.getElementById('welcomeMessage').style.display = 'none';
       studentData = {};
 
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
       document.getElementById('step1').classList.add('active');
-    }
-
-    // فتح لوحة الإدارة
-    async function openAdminPanel() {
-      const password = prompt("أدخل كلمة السر لعرض المشتركين:");
-      if (password === "852456") {
-        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-        document.getElementById('adminStep').classList.add('active');
-        await renderSubscribers();
-      } else if (password !== null) {
-        alert("كلمة السر غير صحيحة!");
-      }
-    }
-
-    function closeAdminPanel() {
-      resetForm();
-    }
-
-    // عرض المشتركين بالجدول
-    async function renderSubscribers() {
-      const tbody = document.getElementById('subscribersTable');
-      tbody.innerHTML = '<tr><td colspan="10">جاري تحميل البيانات من جوجل شيت...</td></tr>';
-
-      try {
-        const response = await fetch(SCRIPT_URL);
-        const subscribers = await response.json();
-        tbody.innerHTML = '';
-
-        if (subscribers.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="10">لا يوجد مشتركين مسجلين حتى الآن</td></tr>';
-          return;
-        }
-
-        subscribers.forEach((sub, index) => {
-          const row = `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${sub.name}</td>
-              <td>${sub.nationalId}</td>
-              <td>${sub.phone}</td>
-              <td>${sub.school}</td>
-              <td>${sub.grade}</td>
-              <td>${sub.frequency || '-'}</td>
-              <td>${sub.lectureDate || '-'}</td>
-              <td>${sub.lectureTime || '-'}</td>
-              <td>${sub.senderPhone || '-'}</td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-      } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="10">خطأ في جلب البيانات!</td></tr>';
-      }
-    }
-
-    // تصدير ملف CSV
-    async function exportToCSV() {
-      try {
-        const response = await fetch(SCRIPT_URL);
-        const subscribers = await response.json();
-
-        if (subscribers.length === 0) {
-          alert("لا توجد بيانات لتصديرها!");
-          return;
-        }
-
-        let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,عدد المرات,تاريخ البدء,الوقت,رقم المحول\n";
-        subscribers.forEach(s => {
-          csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.frequency || ''}","${s.lectureDate || ''}","${s.lectureTime || ''}","${s.senderPhone || ''}"\n`;
-        });
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "قائمة_المشتركين.csv";
-        link.click();
-      } catch (e) {
-        alert("تعذر جلب البيانات لتصديرها!");
-      }
     }
   </script>
 </body>
