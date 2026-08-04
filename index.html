@@ -359,9 +359,13 @@
 
   </div>
 
+  <!-- آي فريم مخفي يستقبل النتيجة لمنع تحديث الصفحة عند الإرسال -->
+  <iframe name="script_target" id="script_target" style="display:none;"></iframe>
+
   <script>
     let studentData = {};
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx9eNIbUgS0zZfGSKohPvZZQAiuWGHn1AyWNex89xN8VLn5ls4iwsZtdJhhAvdsxUct/exec";
+    // الرابط الجديد الخاص بك
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzLTaf2fk_gZwDkq5wsuOXd2o8qU2RyJ1jGxVVhjtVG18mnrpydiiqwqIcwGi8_B6UY/exec";
 
     // البحث التلقائي
     document.getElementById('nationalId').addEventListener('input', async function(e) {
@@ -432,8 +436,8 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    // إرسال البيانات بآلية no-cors المؤكدة وصول البيانات لشيت الإكسل مباشرة
-    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+    // إرسال البيانات فوراً للشيت عن طريق Native Dynamic Form Submit
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
@@ -442,26 +446,32 @@
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
-      try {
-        await fetch(GOOGLE_SHEET_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(studentData)
-        });
+      // بناء نموذج ديناميكي للإرسال المباشر
+      const submitForm = document.createElement('form');
+      submitForm.action = GOOGLE_SHEET_URL;
+      submitForm.method = 'POST';
+      submitForm.target = 'script_target';
 
+      for (const key in studentData) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = studentData[key];
+        submitForm.appendChild(input);
+      }
+
+      document.body.appendChild(submitForm);
+      submitForm.submit();
+
+      // التنقل لصفحة النجاح مباشرة
+      setTimeout(() => {
+        document.body.removeChild(submitForm);
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
         
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
-      } catch (error) {
-        alert("حدثت مشكلة، حاول مرة أخرى.");
-        submitBtn.disabled = false;
-        submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
-      }
+      }, 1200);
     });
 
     function resetForm() {
