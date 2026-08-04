@@ -206,6 +206,28 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* كارت الترحيب بالطالب في صفحة الدفع */
+    .welcome-banner {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .welcome-banner h3 {
+      font-size: 16px;
+      color: #818cf8;
+      font-weight: 700;
+    }
+
+    .welcome-banner p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 3px;
+    }
+
     .payment-info {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
@@ -334,6 +356,13 @@
     <!-- الخطوة 2 -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
+      
+      <!-- بنر إظهار اسم الطالب المحول له -->
+      <div class="welcome-banner">
+        <h3 id="displayStudentName">أهلاً بك 👋</h3>
+        <p id="displayNationalId">الرقم القومي: --</p>
+      </div>
+
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong style="color: #f87171;">20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
@@ -369,10 +398,18 @@
 
   <script>
     let studentData = {};
-    // الرابط الجديد
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzQQo01TZxdBUrlaITi8xsXK_i7kpml3-GkNfENM0W4IV3VrZkLV1ACS12nWrHb34jv/exec";
 
-    // البحث والترحيب باسم الطالب
+    // دالة تحديث اسم الطالب ورقمه القومي في صفحة الدفع
+    function updatePaymentPageInfo() {
+      const name = document.getElementById('name').value.trim() || studentData.name || 'طالبنا العزيز';
+      const id = document.getElementById('nationalId').value.trim() || studentData.nationalId || '';
+      
+      document.getElementById('displayStudentName').innerText = `أهلاً بك، ${name} 👋`;
+      document.getElementById('displayNationalId').innerText = id ? `الرقم القومي: ${id}` : '';
+    }
+
+    // البحث التلقائي بالرقم القومي
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
       const statusDiv = document.getElementById('searchStatus');
@@ -390,7 +427,6 @@
           if (result.found) {
             studentData = result.data || {};
             
-            // تعبئة البيانات في الحقول
             document.getElementById('name').value = studentData.name || '';
             document.getElementById('phone').value = studentData.phone || '';
             document.getElementById('school').value = studentData.school || '';
@@ -405,20 +441,20 @@
               document.getElementById('lectureTime').value = studentData.lectureTime;
             }
 
-            // استخراج اسم الطالب أو الاعتماد على الحقل الممتلئ
-            const currentName = document.getElementById('name').value.trim();
-            const displayName = currentName !== '' ? currentName : (studentData.name || 'طالبنا العزيز');
+            const displayName = document.getElementById('name').value.trim() || studentData.name || 'طالبنا العزيز';
 
-            // عرض الترحيب بوضوح
             statusDiv.style.color = '#34d399';
             statusDiv.style.borderColor = 'rgba(52, 211, 153, 0.4)';
             statusDiv.innerText = `👋 مرحباً بك مجدداً (${displayName})! تم جلب بياناتك بنجاح.`;
+
+            // تحديث بيانات الدفع والتحويل التلقائي
+            updatePaymentPageInfo();
 
             setTimeout(() => {
               statusDiv.style.display = 'none';
               document.getElementById('step1').classList.remove('active');
               document.getElementById('step2').classList.add('active');
-            }, 2000);
+            }, 1800);
           } else {
             statusDiv.style.color = '#cbd5e1';
             statusDiv.style.borderColor = 'rgba(255, 255, 255, 0.15)';
@@ -449,6 +485,9 @@
         lectureDate: document.getElementById('lectureDate').value,
         lectureTime: document.getElementById('lectureTime').value
       };
+
+      // تحديث البنر في صفحة الدفع باسم الطالب ورقمه
+      updatePaymentPageInfo();
 
       document.getElementById('step1').classList.remove('active');
       document.getElementById('step2').classList.add('active');
