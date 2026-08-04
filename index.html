@@ -254,14 +254,15 @@
 
     .search-status {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: #38bdf8;
-      margin-top: 6px;
+      margin-top: 8px;
       display: none;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
       background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -368,9 +369,10 @@
 
   <script>
     let studentData = {};
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxJm4rYUPpw2LN8GqeUYnRn-kGSBwgap0dXSHfTyokINXdF6CW9L1yHmt5obQDNhgK_/exec";
+    // الرابط الجديد
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzQQo01TZxdBUrlaITi8xsXK_i7kpml3-GkNfENM0W4IV3VrZkLV1ACS12nWrHb34jv/exec";
 
-    // البحث التلقائي بالرقم القومي والترحيب باسم الطالب
+    // البحث والترحيب باسم الطالب
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
       const statusDiv = document.getElementById('searchStatus');
@@ -378,7 +380,7 @@
       if (val.length === 14 && /^\d+$/.test(val)) {
         statusDiv.style.display = 'block';
         statusDiv.style.color = '#38bdf8';
-        statusDiv.style.borderColor = 'rgba(56, 189, 248, 0.2)';
+        statusDiv.style.borderColor = 'rgba(56, 189, 248, 0.25)';
         statusDiv.innerText = '🔍 جاري التفتيش عن حسابك في النظام...';
         
         try {
@@ -386,14 +388,9 @@
           const result = await res.json();
           
           if (result.found) {
-            studentData = result.data;
-            const studentName = studentData.name || 'طالبنا العزيز';
+            studentData = result.data || {};
             
-            // رسالة الترحيب باسم الطالب
-            statusDiv.style.color = '#34d399';
-            statusDiv.style.borderColor = 'rgba(52, 211, 153, 0.3)';
-            statusDiv.innerText = `👋 مرحباً بك مجدداً (${studentName})! تم جلب بياناتك بنجاح.`;
-            
+            // تعبئة البيانات في الحقول
             document.getElementById('name').value = studentData.name || '';
             document.getElementById('phone').value = studentData.phone || '';
             document.getElementById('school').value = studentData.school || '';
@@ -407,16 +404,25 @@
             if (studentData.lectureTime) {
               document.getElementById('lectureTime').value = studentData.lectureTime;
             }
-            
-            // الانتظار ثانية ونصف ليرى الطالب الترحيب ثم النقله لخطوة الدفع
+
+            // استخراج اسم الطالب أو الاعتماد على الحقل الممتلئ
+            const currentName = document.getElementById('name').value.trim();
+            const displayName = currentName !== '' ? currentName : (studentData.name || 'طالبنا العزيز');
+
+            // عرض الترحيب بوضوح
+            statusDiv.style.color = '#34d399';
+            statusDiv.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+            statusDiv.innerText = `👋 مرحباً بك مجدداً (${displayName})! تم جلب بياناتك بنجاح.`;
+
             setTimeout(() => {
               statusDiv.style.display = 'none';
               document.getElementById('step1').classList.remove('active');
               document.getElementById('step2').classList.add('active');
-            }, 1800);
+            }, 2000);
           } else {
             statusDiv.style.color = '#cbd5e1';
-            statusDiv.innerText = 'ℹ️ رقم قومي جديد. أكمل باقي البيانات لتسجيل حجزك لأول مرة.';
+            statusDiv.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            statusDiv.innerText = 'ℹ️ حساب جديد. أكمل باقي البيانات لتسجيل حجزك.';
           }
         } catch (err) {
           statusDiv.style.display = 'none';
