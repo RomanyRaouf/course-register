@@ -253,10 +253,15 @@
     }
 
     .search-status {
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 600;
       color: #38bdf8;
-      margin-top: 4px;
+      margin-top: 6px;
       display: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
     }
   </style>
 </head>
@@ -277,7 +282,7 @@
         <div class="form-group">
           <label>الرقم القومي (14 رقم):</label>
           <input type="text" id="nationalId" pattern="[0-9]{14}" title="الرقم القومي مكون من 14 رقم" required placeholder="أدخل الرقم القومي لبحث حسابك أو التسجيل">
-          <span id="searchStatus" class="search-status">جاري التحقق من الرقم القومي...</span>
+          <div id="searchStatus" class="search-status">جاري التحقق من الرقم القومي...</div>
         </div>
         <div class="form-group">
           <label>الاسم بالكامل:</label>
@@ -363,25 +368,31 @@
 
   <script>
     let studentData = {};
-    // رابط السكريبت المحدث والفعال
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxJm4rYUPpw2LN8GqeUYnRn-kGSBwgap0dXSHfTyokINXdF6CW9L1yHmt5obQDNhgK_/exec";
 
-    // البحث التلقائي بالرقم القومي
+    // البحث التلقائي بالرقم القومي والترحيب باسم الطالب
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
-      const statusSpan = document.getElementById('searchStatus');
+      const statusDiv = document.getElementById('searchStatus');
       
       if (val.length === 14 && /^\d+$/.test(val)) {
-        statusSpan.style.display = 'block';
-        statusSpan.innerText = '🔍 جاري التفتيش عن حسابك في النظام...';
+        statusDiv.style.display = 'block';
+        statusDiv.style.color = '#38bdf8';
+        statusDiv.style.borderColor = 'rgba(56, 189, 248, 0.2)';
+        statusDiv.innerText = '🔍 جاري التفتيش عن حسابك في النظام...';
         
         try {
           const res = await fetch(`${GOOGLE_SHEET_URL}?nationalId=${val}`);
           const result = await res.json();
           
           if (result.found) {
-            statusSpan.innerText = '✅ تم العثور على بياناتك! جاري تحويلك لصفحة الدفع...';
             studentData = result.data;
+            const studentName = studentData.name || 'طالبنا العزيز';
+            
+            // رسالة الترحيب باسم الطالب
+            statusDiv.style.color = '#34d399';
+            statusDiv.style.borderColor = 'rgba(52, 211, 153, 0.3)';
+            statusDiv.innerText = `👋 مرحباً بك مجدداً (${studentName})! تم جلب بياناتك بنجاح.`;
             
             document.getElementById('name').value = studentData.name || '';
             document.getElementById('phone').value = studentData.phone || '';
@@ -397,19 +408,21 @@
               document.getElementById('lectureTime').value = studentData.lectureTime;
             }
             
+            // الانتظار ثانية ونصف ليرى الطالب الترحيب ثم النقله لخطوة الدفع
             setTimeout(() => {
-              statusSpan.style.display = 'none';
+              statusDiv.style.display = 'none';
               document.getElementById('step1').classList.remove('active');
               document.getElementById('step2').classList.add('active');
-            }, 1000);
+            }, 1800);
           } else {
-            statusSpan.innerText = 'ℹ️ حساب جديد. أكمل باقي البيانات لتسجيل حجزك.';
+            statusDiv.style.color = '#cbd5e1';
+            statusDiv.innerText = 'ℹ️ رقم قومي جديد. أكمل باقي البيانات لتسجيل حجزك لأول مرة.';
           }
         } catch (err) {
-          statusSpan.style.display = 'none';
+          statusDiv.style.display = 'none';
         }
       } else {
-        statusSpan.style.display = 'none';
+        statusDiv.style.display = 'none';
       }
     });
 
@@ -435,7 +448,6 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    // إرسال البيانات مباشرة لشيت الإكسل
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
