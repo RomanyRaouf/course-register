@@ -36,26 +36,16 @@
       position: relative;
       overflow: hidden;
     }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
-      pointer-events: none;
-    }
     h2 {
       text-align: center;
       color: #ffffff;
       font-size: 24px;
       font-weight: 800;
       margin-bottom: 25px;
-      letter-spacing: -0.5px;
     }
     .form-group {
       margin-bottom: 18px;
+      position: relative;
     }
     label {
       display: block;
@@ -112,9 +102,6 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
     }
-    .btn:active {
-      transform: translateY(0);
-    }
     .btn:disabled {
       background: #475569;
       box-shadow: none;
@@ -130,7 +117,6 @@
     .btn-reset:hover {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
-      box-shadow: none;
     }
     .step {
       display: none;
@@ -151,10 +137,6 @@
       margin-bottom: 22px;
       text-align: center;
     }
-    .payment-info p {
-      color: #f1f5f9;
-      font-size: 15px;
-    }
     .vodafone-number {
       font-size: 26px;
       font-weight: 800;
@@ -174,10 +156,6 @@
       border-radius: 16px;
       text-align: center;
     }
-    .link-box p {
-      color: #e2e8f0;
-      margin-bottom: 10px;
-    }
     .teams-btn {
       display: inline-flex;
       align-items: center;
@@ -193,9 +171,11 @@
       transition: all 0.3s ease;
       width: 100%;
     }
-    .teams-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+    .search-status {
+      font-size: 12px;
+      color: #38bdf8;
+      margin-top: 4px;
+      display: none;
     }
   </style>
 </head>
@@ -208,12 +188,13 @@
       <h2>تسجيل البيانات والميعاد</h2>
       <form id="registrationForm">
         <div class="form-group">
-          <label>الاسم بالكامل:</label>
-          <input type="text" id="name" required placeholder="أدخل اسمك رباعي">
+          <label>الرقم القومي (14 رقم):</label>
+          <input type="text" id="nationalId" pattern="[0-9]{14}" title="الرقم القومي مكون من 14 رقم" required placeholder="أدخل الرقم القومي لبحث حسابك أو التسجيل">
+          <span id="searchStatus" class="search-status">جاري التحقق من الرقم القومي...</span>
         </div>
         <div class="form-group">
-          <label>الرقم القومي:</label>
-          <input type="text" id="nationalId" pattern="[0-9]{14}" title="الرقم القومي مكون من 14 رقم" required placeholder="أدخل 14 رقم">
+          <label>الاسم بالكامل:</label>
+          <input type="text" id="name" required placeholder="أدخل اسمك رباعي">
         </div>
         <div class="form-group">
           <label>رقم التليفون (الواتساب):</label>
@@ -293,9 +274,52 @@
 
   <script>
     let studentData = {};
-    
-    // رابط Google Apps Script الخاص بك
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzoQVjGd3cuKqOWiNJRDM_7alDx2xvLOOuBaReBN_SbIjKMMTRkDpDl3dR5-Hi3hNK9/exec";
+
+    // الباحث التلقائي بالرقم القومي فور كتابة 14 رقم
+    document.getElementById('nationalId').addEventListener('input', async function(e) {
+      const val = e.target.value.trim();
+      const statusSpan = document.getElementById('searchStatus');
+      
+      if (val.length === 14 && /^\d+$/.test(val)) {
+        statusSpan.style.display = 'block';
+        statusSpan.innerText = '🔍 جاري التفتيش عن حسابك في النظام...';
+        
+        try {
+          const res = await fetch(`${GOOGLE_SHEET_URL}?nationalId=${val}`);
+          const result = await res.json();
+          
+          if (result.found) {
+            statusSpan.innerText = '✅ تم العثور على بياناتك! جاري تحويلك لصفحة الدفع...';
+            studentData = result.data;
+            
+            // تعبئة البيانات في النموذج تلقائياً
+            document.getElementById('name').value = studentData.name || '';
+            document.getElementById('phone').value = studentData.phone || '';
+            document.getElementById('school').value = studentData.school || '';
+            document.getElementById('grade').value = studentData.grade || '';
+            document.getElementById('frequency').value = studentData.frequency || '';
+            
+            if (studentData.lectureDate) {
+              const d = new Date(studentData.lectureDate);
+              if (!isNaN(d)) document.getElementById('lectureDate').value = d.toISOString().split('T')[0];
+            }
+            
+            setTimeout(() => {
+              statusSpan.style.display = 'none';
+              document.getElementById('step1').classList.remove('active');
+              document.getElementById('step2').classList.add('active');
+            }, 1200);
+          } else {
+            statusSpan.innerText = 'ℹ️ لم يتم العثور على مسجل سابق بهذا الرقم. أملأ باقي البيانات لتسجيل جديد.';
+          }
+        } catch (err) {
+          statusSpan.style.display = 'none';
+        }
+      } else {
+        statusSpan.style.display = 'none';
+      }
+    });
 
     function goToStep2() {
       const form = document.getElementById('registrationForm');
@@ -324,16 +348,15 @@
 
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerText = "جاري حفظ البيانات وتأكيد الحجز...";
+      submitBtn.innerText = "جاري الحفظ والتأكيد...";
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
       try {
         await fetch(GOOGLE_SHEET_URL, {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain;charset=utf-8'
           },
           body: JSON.stringify(studentData)
         });
@@ -341,7 +364,7 @@
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
       } catch (error) {
-        alert("تأكد من الاتصال بالإنترنت وحاول مجدداً.");
+        alert("حدثت مشكلة في الاتصال بالإنترنت، حاول مجدداً.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
@@ -351,6 +374,7 @@
     function resetForm() {
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentForm').reset();
+      document.getElementById('searchStatus').style.display = 'none';
       studentData = {};
 
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
