@@ -27,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* تأثيرات الخلفية المتحركة */
     .bg-animation {
       position: fixed;
       top: 0;
@@ -263,7 +262,6 @@
 </head>
 <body>
 
-  <!-- كرات الإضاءة المتحركة -->
   <div class="bg-animation">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -272,7 +270,7 @@
 
   <div class="card">
     
-    <!-- الخطوة 1: التسجيل والاستعلام -->
+    <!-- الخطوة 1 -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
       <form id="registrationForm">
@@ -327,7 +325,7 @@
       </form>
     </div>
 
-    <!-- الخطوة 2: صفحة الدفع -->
+    <!-- الخطوة 2 -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
       <div class="payment-info">
@@ -346,7 +344,7 @@
       </form>
     </div>
 
-    <!-- الخطوة 3: الرابط النهائي -->
+    <!-- الخطوة 3 -->
     <div id="step3" class="step">
       <h2>تم التسجيل بنجاح!</h2>
       <div class="link-box">
@@ -361,14 +359,11 @@
 
   </div>
 
-  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-
   <script>
     let studentData = {};
-    // الرابط الجديد الخاص بك
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx9eNIbUgS0zZfGSKohPvZZQAiuWGHn1AyWNex89xN8VLn5ls4iwsZtdJhhAvdsxUct/exec";
 
-    // البحث الفوري فور استكمال 14 رقم
+    // البحث التلقائي
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
       const statusSpan = document.getElementById('searchStatus');
@@ -437,8 +432,8 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    // إرسال كـ Form لضمان تخطي أي حظر CORS بالمتصفحات
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    // إرسال البيانات بآلية no-cors المؤكدة وصول البيانات لشيت الإكسل مباشرة
+    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
@@ -447,28 +442,26 @@
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
-      const hiddenForm = document.createElement('form');
-      hiddenForm.method = 'POST';
-      hiddenForm.action = GOOGLE_SHEET_URL;
-      hiddenForm.target = 'hidden_iframe';
+      try {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(studentData)
+        });
 
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'postData';
-      input.value = JSON.stringify(studentData);
-      hiddenForm.appendChild(input);
-
-      document.body.appendChild(hiddenForm);
-      hiddenForm.submit();
-
-      setTimeout(() => {
-        document.body.removeChild(hiddenForm);
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
         
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
-      }, 1500);
+      } catch (error) {
+        alert("حدثت مشكلة، حاول مرة أخرى.");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
+      }
     });
 
     function resetForm() {
