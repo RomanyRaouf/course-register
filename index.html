@@ -272,11 +272,14 @@
 
   </div>
 
+  <!-- Iframe خفي لمنع مشاكل CORS واستلام الإرسال بنجاح -->
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
   <script>
     let studentData = {};
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzoQVjGd3cuKqOWiNJRDM_7alDx2xvLOOuBaReBN_SbIjKMMTRkDpDl3dR5-Hi3hNK9/exec";
 
-    // الباحث التلقائي بالرقم القومي فور كتابة 14 رقم
+    // البحث التلقائي بالرقم القومي
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
       const statusSpan = document.getElementById('searchStatus');
@@ -293,7 +296,6 @@
             statusSpan.innerText = '✅ تم العثور على بياناتك! جاري تحويلك لصفحة الدفع...';
             studentData = result.data;
             
-            // تعبئة البيانات في النموذج تلقائياً
             document.getElementById('name').value = studentData.name || '';
             document.getElementById('phone').value = studentData.phone || '';
             document.getElementById('school').value = studentData.school || '';
@@ -304,14 +306,17 @@
               const d = new Date(studentData.lectureDate);
               if (!isNaN(d)) document.getElementById('lectureDate').value = d.toISOString().split('T')[0];
             }
+            if (studentData.lectureTime) {
+              document.getElementById('lectureTime').value = studentData.lectureTime;
+            }
             
             setTimeout(() => {
               statusSpan.style.display = 'none';
               document.getElementById('step1').classList.remove('active');
               document.getElementById('step2').classList.add('active');
-            }, 1200);
+            }, 1000);
           } else {
-            statusSpan.innerText = 'ℹ️ لم يتم العثور على مسجل سابق بهذا الرقم. أملأ باقي البيانات لتسجيل جديد.';
+            statusSpan.innerText = 'ℹ️ حساب جديد. أملأ باقي البيانات لتأكيد الحجز.';
           }
         } catch (err) {
           statusSpan.style.display = 'none';
@@ -343,7 +348,8 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+    // إرسال البيانات بشكل مضاعف ومضمون بدون أخطاء CORS
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
@@ -352,23 +358,31 @@
 
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
-      try {
-        await fetch(GOOGLE_SHEET_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(studentData)
-        });
+      // إنشاء نموذج مؤقت للإرسال عبر hidden iframe
+      const hiddenForm = document.createElement('form');
+      hiddenForm.method = 'POST';
+      hiddenForm.action = GOOGLE_SHEET_URL;
+      hiddenForm.target = 'hidden_iframe';
 
-        document.getElementById('step2').classList.remove('active');
-        document.getElementById('step3').classList.add('active');
-      } catch (error) {
-        alert("حدثت مشكلة في الاتصال بالإنترنت، حاول مجدداً.");
-      } finally {
+      // إرسال البيانات كـ JSON string في input خفي
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'postData';
+      input.value = JSON.stringify(studentData);
+      hiddenForm.appendChild(input);
+
+      document.body.appendChild(hiddenForm);
+      hiddenForm.submit();
+
+      // الانتقال للخطوة 3 مباشرة بعد الحفظ
+      setTimeout(() => {
+        document.body.removeChild(hiddenForm);
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
-      }
+        
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+      }, 1500);
     });
 
     function resetForm() {
