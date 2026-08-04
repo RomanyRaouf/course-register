@@ -15,7 +15,6 @@
       padding: 0;
     }
     
-    /* خلفية متدرجة مع أشكال متحركة */
     body {
       background: #090d16;
       display: flex;
@@ -28,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    /* الأشكال المتحركة في الخلفية */
+    /* تأثيرات الخلفية المتحركة */
     .bg-animation {
       position: fixed;
       top: 0;
@@ -78,15 +77,9 @@
     }
 
     @keyframes float {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-      50% {
-        transform: translate(60px, 80px) scale(1.15);
-      }
-      100% {
-        transform: translate(-40px, 40px) scale(0.9);
-      }
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(60px, 80px) scale(1.15); }
+      100% { transform: translate(-40px, 40px) scale(0.9); }
     }
 
     .card {
@@ -111,10 +104,12 @@
       font-weight: 800;
       margin-bottom: 25px;
     }
+
     .form-group {
       margin-bottom: 18px;
       position: relative;
     }
+
     label {
       display: block;
       margin-bottom: 8px;
@@ -122,6 +117,7 @@
       font-size: 14px;
       color: #cbd5e1;
     }
+
     input, select {
       width: 100%;
       padding: 12px 16px;
@@ -133,25 +129,31 @@
       outline: none;
       transition: all 0.3s ease;
     }
+
     select option {
       background-color: #0f172a;
       color: #ffffff;
     }
+
     input::placeholder {
       color: #64748b;
     }
+
     input:focus, select:focus {
       border-color: #6366f1;
       box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
       background-color: rgba(15, 23, 42, 0.85);
     }
+
     .form-row {
       display: flex;
       gap: 12px;
     }
+
     .form-row .form-group {
       flex: 1;
     }
+
     .btn {
       width: 100%;
       padding: 14px;
@@ -166,15 +168,18 @@
       margin-top: 10px;
       box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
     }
+
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
     }
+
     .btn:disabled {
       background: #475569;
       box-shadow: none;
       cursor: not-allowed;
     }
+
     .btn-reset {
       background: rgba(255, 255, 255, 0.08);
       color: #94a3b8;
@@ -182,21 +187,26 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       margin-top: 8px;
     }
+
     .btn-reset:hover {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
     }
+
     .step {
       display: none;
       animation: fadeIn 0.4s ease-in-out forwards;
     }
+
     .step.active {
       display: block;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .payment-info {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
@@ -205,6 +215,7 @@
       margin-bottom: 22px;
       text-align: center;
     }
+
     .vodafone-number {
       font-size: 26px;
       font-weight: 800;
@@ -217,6 +228,7 @@
       padding: 6px 18px;
       border-radius: 30px;
     }
+
     .link-box {
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.3);
@@ -224,6 +236,7 @@
       border-radius: 16px;
       text-align: center;
     }
+
     .teams-btn {
       display: inline-flex;
       align-items: center;
@@ -239,6 +252,7 @@
       transition: all 0.3s ease;
       width: 100%;
     }
+
     .search-status {
       font-size: 12px;
       color: #38bdf8;
@@ -249,7 +263,7 @@
 </head>
 <body>
 
-  <!-- أجزاء الخلفية المتحركة -->
+  <!-- كرات الإضاءة المتحركة -->
   <div class="bg-animation">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -258,7 +272,7 @@
 
   <div class="card">
     
-    <!-- الخطوة 1: استمارة التسجيل والميعاد -->
+    <!-- الخطوة 1: التسجيل والاستعلام -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
       <form id="registrationForm">
@@ -313,7 +327,7 @@
       </form>
     </div>
 
-    <!-- الخطوة 2: الدفع -->
+    <!-- الخطوة 2: صفحة الدفع -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
       <div class="payment-info">
@@ -332,7 +346,7 @@
       </form>
     </div>
 
-    <!-- الخطوة 3: رابط المحاضرة -->
+    <!-- الخطوة 3: الرابط النهائي -->
     <div id="step3" class="step">
       <h2>تم التسجيل بنجاح!</h2>
       <div class="link-box">
@@ -351,8 +365,10 @@
 
   <script>
     let studentData = {};
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzoQVjGd3cuKqOWiNJRDM_7alDx2xvLOOuBaReBN_SbIjKMMTRkDpDl3dR5-Hi3hNK9/exec";
+    // الرابط الجديد الخاص بك
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx9eNIbUgS0zZfGSKohPvZZQAiuWGHn1AyWNex89xN8VLn5ls4iwsZtdJhhAvdsxUct/exec";
 
+    // البحث الفوري فور استكمال 14 رقم
     document.getElementById('nationalId').addEventListener('input', async function(e) {
       const val = e.target.value.trim();
       const statusSpan = document.getElementById('searchStatus');
@@ -389,7 +405,7 @@
               document.getElementById('step2').classList.add('active');
             }, 1000);
           } else {
-            statusSpan.innerText = 'ℹ️ حساب جديد. أملأ باقي البيانات لتأكيد الحجز.';
+            statusSpan.innerText = 'ℹ️ حساب جديد. أكمل باقي البيانات لتسجيل حجزك.';
           }
         } catch (err) {
           statusSpan.style.display = 'none';
@@ -421,6 +437,7 @@
       document.getElementById('step2').classList.add('active');
     }
 
+    // إرسال كـ Form لضمان تخطي أي حظر CORS بالمتصفحات
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
