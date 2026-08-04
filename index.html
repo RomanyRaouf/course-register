@@ -220,7 +220,9 @@
 
   <script>
     let studentData = {};
-    const FORMSPREE_URL = "https://formspree.io/f/mnjekyrj";
+    
+    // رابط Google Apps Script الخاص بك
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzoQVjGd3cuKqOWiNJRDM_7alDx2xvLOOuBaReBN_SbIjKMMTRkDpDl3dR5-Hi3hNK9/exec";
 
     // الانتقال للخطوة الثانية وتجميع البيانات الأولية
     function goToStep2() {
@@ -245,7 +247,7 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    // إرسال كافة البيانات إلى Formspree عند تأكيد الدفع
+    // إرسال كافة البيانات إلى Google Sheets عند تأكيد الدفع
     document.getElementById('paymentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -256,23 +258,20 @@
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
 
       try {
-        const response = await fetch(FORMSPREE_URL, {
+        await fetch(GOOGLE_SHEET_URL, {
           method: 'POST',
+          mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(studentData)
         });
 
-        if (response.ok) {
-          document.getElementById('step2').classList.remove('active');
-          document.getElementById('step3').classList.add('active');
-        } else {
-          alert("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
-        }
+        // الانتقال للخطوة الثالثة بعد الإرسال
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
       } catch (error) {
-        alert("تأكد من الاتصال بالإنترنت حاول مجدداً.");
+        alert("تأكد من الاتصال بالإنترنت وحاول مجدداً.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "تأكيد الدفع واستلام رابط المحاضرة";
