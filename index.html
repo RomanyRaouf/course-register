@@ -313,6 +313,16 @@
           <input type="text" id="name" required placeholder="أدخل اسمك رباعي">
         </div>
         <div class="form-group">
+          <label>اختر الكورس:</label>
+          <select id="course" required>
+            <option value="" disabled selected>-- اختر الكورس --</option>
+            <option value="جافا سكريبت">جافا سكريبت</option>
+            <option value="بايثون">بايثون</option>
+            <option value="C# برمجة مستوى ثاني">C# برمجة مستوى ثاني</option>
+            <option value="ميكروسوفت إكسل">ميكروسوفت إكسل</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>رقم التليفون (الواتساب):</label>
           <input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
         </div>
@@ -324,9 +334,11 @@
           <label>الصف الدراسي:</label>
           <select id="grade" required>
             <option value="">اختر الصف الدراسي</option>
+            <option value="المرحلة الإعدادية">المرحلة الإعدادية</option>
             <option value="الأول الثانوي">الأول الثانوي</option>
             <option value="الثاني الثانوي">الثاني الثانوي</option>
             <option value="الثالث الثانوي">الثالث الثانوي</option>
+            <option value="معلم">معلم</option>
           </select>
         </div>
         <div class="form-group">
@@ -429,6 +441,7 @@
             studentData = result.data || {};
             
             document.getElementById('name').value = studentData.name || '';
+            document.getElementById('course').value = studentData.course || '';
             document.getElementById('phone').value = studentData.phone || '';
             document.getElementById('school').value = studentData.school || '';
             document.getElementById('grade').value = studentData.grade || '';
@@ -479,6 +492,7 @@
       studentData = {
         name: document.getElementById('name').value.trim(),
         nationalId: document.getElementById('nationalId').value.trim(),
+        course: document.getElementById('course').value,
         phone: document.getElementById('phone').value.trim(),
         school: document.getElementById('school').value.trim(),
         grade: document.getElementById('grade').value,
