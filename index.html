@@ -179,21 +179,23 @@
           document.getElementById('lectureDate').value = foundStudent.lectureDate || '';
           document.getElementById('lectureTime').value = foundStudent.lectureTime || '';
 
-          // التحقق من حالة طلب الطالب السابق
           document.getElementById('step1').classList.remove('active');
 
-          if (foundStudent.status === 'مقبول') {
-            // إذا كان الدفع مقبولاً مسبقاً، نظهر له رابط الـ Teams مباشرة (الخطوة 3)
-            document.getElementById('step3').classList.add('active');
-            document.getElementById('step3Title').innerText = "أهلاً بك يا " + foundStudent.name;
-            document.getElementById('pendingBox').style.display = 'none';
-            document.getElementById('approvedBox').style.display = 'block';
-          } else {
-            // إذا كان الطلب قيد المراجعة أو لم يتم قبوله بعد
+          // التعديل الجوهري هنا:
+          // إذا كان الطلب السابق ما زال "قيد المراجعة" فعلياً، نظهر له شاشة الانتظار
+          // أما لو كان "مقبولاً" (وهذا طبيعي لأنه حجز قبل كده ودخل)، فننقله لخطوة الدفع (Step 2) عشان يحجز محاضرة جديدة ويرفع إيصال جديد
+          if (foundStudent.status === 'قيد المراجعة') {
             document.getElementById('step3').classList.add('active');
             document.getElementById('step3Title').innerText = "حالة الطلب الحالي";
             document.getElementById('pendingBox').style.display = 'block';
             document.getElementById('approvedBox').style.display = 'none';
+          } else {
+            // لو حالته مقبول (محاضرة قديمة وانتهت)، يروح على خطوة الدفع مباشرة لحجز المحاضرة الجديدة
+            const welcomeBox = document.getElementById('welcomeMessage');
+            welcomeBox.style.display = 'block';
+            welcomeBox.innerText = `أهلاً بك يا ${foundStudent.name}، يرجى إتمام دفع رسوم المحاضرة الجديدة ورفع الإيصال.`;
+            
+            document.getElementById('step2').classList.add('active');
           }
 
         } else {
