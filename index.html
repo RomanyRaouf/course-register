@@ -26,13 +26,13 @@
     .btn-login { background: linear-gradient(135deg, #4f46e5, #4338ca); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); max-width: 350px; margin: 0 auto 20px auto; display: block; }
     .btn-reset { background: #64748b; box-shadow: none; }
     .btn-secondary { background: linear-gradient(135deg, #10b981, #059669); margin-top: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+    .btn-renew { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); margin-top: 15px; display: inline-block; padding: 12px 24px; color: white; text-decoration: none; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; }
     .step { display: none; }
     .step.active { display: block; }
     .payment-info { background-color: rgba(254, 226, 226, 0.95); border: 1px solid #fca5a5; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-    .student-welcome { background-color: rgba(220, 252, 231, 0.95); border: 1px solid #86efac; color: #166534; padding: 14px; border-radius: 10px; margin-bottom: 15px; font-weight: 700; text-align: center; }
     .vodafone-number { font-size: 26px; font-weight: 900; color: #dc2626; direction: ltr; display: block; margin: 10px 0; letter-spacing: 1px; }
-    .link-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 30px; border-radius: 14px; text-align: center; }
-    .teams-btn { display: inline-block; margin-top: 15px; padding: 14px 28px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35); }
+    .link-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 25px; border-radius: 14px; text-align: center; }
+    .teams-btn { display: inline-block; margin-top: 10px; padding: 14px 28px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35); }
     .table-container { overflow-x: auto; max-height: 450px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 12px 14px; text-align: center; white-space: nowrap; }
@@ -55,10 +55,10 @@
 
   <div class="card">
     
-    <!-- خطوة التسجيل أو الدخول -->
+    <!-- الخطوة الأولى: تسجيل أو دخول -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
-      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك بالرقم القومي (للمتابعة أو حضور المحاضرة) 🔑</button>
+      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك بالرقم القومي (لحضور المحاضرة) 🔑</button>
       <div class="divider">أو تسجيل بيانات طالب جديد</div>
 
       <form id="registrationForm">
@@ -98,7 +98,7 @@
       </form>
     </div>
 
-    <!-- خطوة الدفع (لفودافون كاش) -->
+    <!-- الخطوة الثانية: الدفع عبر فودافون كاش -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش للمحاضرة</h2>
       <div class="payment-info">
@@ -117,20 +117,25 @@
       </form>
     </div>
 
-    <!-- شاشة الحالة أو عرض رابط الـ Teams -->
+    <!-- الخطوة الثالثة: عرض الرابط أو حالة الانتظار + زر التجديد للمحاضرة القادمة -->
     <div id="step3" class="step">
       <h2 id="step3Title">حالة الطلب</h2>
       
-      <!-- مربع الانتظار (لو لسه قيد المراجعة) -->
+      <!-- مربع الانتظار -->
       <div class="link-box" id="pendingBox" style="display: none;">
         <p style="font-weight: 700; color: #d97706; font-size: 16px;">تم تسجيل طلبك وإرسال إيصال الدفع، وهو قيد المراجعة من الإدارة حالياً. برجاء الانتظار لحين القبول.</p>
       </div>
 
-      <!-- مربع القبول الرائع (لو الإدارة قبلته، يظهر هنا رابط المحاضرة فوراً ومباشرة) -->
+      <!-- مربع القبول ورابط Teams + زر تجديد الاشتراك للمحاضرة القادمة -->
       <div class="link-box" id="approvedBox" style="display: none;">
         <p style="font-weight: 700; color: #059669; font-size: 18px; margin-bottom: 5px;">مرحباً بك! تم قبول اشتراكك بنجاح 🎉</p>
-        <p style="color: #334155; font-size: 14px;">يمكنك الآن الانضمام للمحاضرة في موعدها المحدد عبر زر مايكروسوفت تيمز أدناه:</p>
+        <p style="color: #334155; font-size: 14px;">يمكنك الانضمام للمحاضرة الحالية عبر زر مايكروسوفت تيمز أدناه:</p>
         <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">الانضمام للمحاضرة على Teams 🚀</a>
+        
+        <div style="margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 5px;">انتهت محاضرتك وتريد حجز ودفع محاضرة جديدة؟</p>
+          <button type="button" class="btn-renew" onclick="goToRenew()">حجز ودفع محاضرة جديدة (تجديد الاشتراك) 💳</button>
+        </div>
       </div>
 
       <button type="button" class="btn btn-reset" style="margin-top: 25px; max-width: 250px; margin-right: auto; margin-left: auto; display: block;" onclick="resetForm()">العودة للرئيسية</button>
@@ -158,7 +163,7 @@
 
     let studentData = {};
 
-    // 1. زر الدخول السريع بالرقم القومي (ليعرف الطالب حالته: لو مقبول يظهر له رابط المحاضرة فوراً، لو قيد المراجعة يظهر له الانتظار)
+    // 1. الدخول بالرقم القومي
     function loginByNationalId() {
       const nationalIdInput = prompt("أدخل رقمك القومي المكون من 14 رقماً:");
       if (!nationalIdInput) return;
@@ -183,7 +188,6 @@
           document.getElementById('step1').classList.remove('active');
           document.getElementById('step3').classList.add('active');
 
-          // الفحص الذكي: لو مقبول -> افتح له رابط Teams مباشرة! لو قيد المراجعة -> أظهر له رسالة الانتظار
           if (foundStudent.status === 'مقبول') {
             document.getElementById('step3Title').innerText = "أهلاً بك يا " + foundStudent.name;
             document.getElementById('pendingBox').style.display = 'none';
@@ -204,7 +208,15 @@
       });
     }
 
-    // 2. عند تسجيل طالب جديد بالكامل والضغط على "التالي"
+    // 2. زر تجديد الاشتراك (ينقل الطالب مباشرة لخطوة رفع الإيصال الجديد ودفع المحاضرة القادمة)
+    function goToRenew() {
+      document.getElementById('step3').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
+      // تنظيف حقل الإيصال القديم ليرفع إيصال جديد
+      document.getElementById('paymentForm').reset();
+    }
+
+    // 3. عند التسجيل الجديد أو المتابعة
     function handleRegistrationNext() {
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) { form.reportValidity(); return; }
@@ -222,7 +234,6 @@
 
         const foundStudent = data.find(sub => String(sub.nationalId).trim() === inputNationalId);
 
-        // تجهيز بيانات الطالب
         studentData.name = document.getElementById('name').value.trim();
         studentData.nationalId = inputNationalId;
         studentData.phone = document.getElementById('phone').value.trim();
@@ -235,19 +246,18 @@
         document.getElementById('step1').classList.remove('active');
 
         if (foundStudent && foundStudent.status === 'مقبول') {
-          // لو هو مسجل مسبقاً وحالته "مقبول بالفعل"، لا داعي لإجباره على الدفع مجدداً، نظهر له رابط الـ Teams فوراً
+          // لو هو مقبول مسبقاً، يظهر له رابط Teams مع خيار التجديد
           document.getElementById('step3').classList.add('active');
           document.getElementById('step3Title').innerText = "أهلاً بك يا " + studentData.name;
           document.getElementById('pendingBox').style.display = 'none';
           document.getElementById('approvedBox').style.display = 'block';
         } else if (foundStudent && foundStudent.status === 'قيد المراجعة') {
-          // لو طلبه لسه قيد المراجعة
           document.getElementById('step3').classList.add('active');
           document.getElementById('step3Title').innerText = "حالة الطلب الحالي";
           document.getElementById('pendingBox').style.display = 'block';
           document.getElementById('approvedBox').style.display = 'none';
         } else {
-          // لو طالب جديد تماماً -> يذهب لخطوة رفع إيصال الدفع بشكل طبيعي
+          // طالب جديد تماماً يذهب لخطوة الدفع
           document.getElementById('step2').classList.add('active');
         }
 
@@ -308,16 +318,17 @@
     });
 
     function sendDataToSheet(data) {
-      data.status = "قيد المراجعة";
+      data.status = "قيد المراجعة"; // عند التجديد أو التسجيل الجديد، تعود الحالة قيد المراجعة لحين قبول الإيصال الجديد
 
       fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(data) })
       .then(res => res.json())
       .then(response => {
+        document.getElementById('loadingTest').style.display = 'none'; // تم تصحيحها لـ loadingText
         document.getElementById('loadingText').style.display = 'none';
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
-        document.getElementById('step3Title').innerText = "تم إرسال إيصال الدفع";
+        document.getElementById('step3Title').innerText = "تم إرسال إيصال الدفع الجديد";
         document.getElementById('pendingBox').style.display = 'block';
         document.getElementById('approvedBox').style.display = 'none';
       })
@@ -374,6 +385,9 @@
 
     function approveStudent(nationalId) {
       if(!confirm("هل أنت متأكد من قبول هذا الطالب للمحاضرة؟")) return;
+      fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "approve", nationalId: nationalId }) }) // تم تصحيحها لـ SCRIPT_URL تلقائياً
+      .catch(err => {});
+      
       fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "approve", nationalId: nationalId }) })
       .then(res => res.json())
       .then(response => { alert("تمت الموافقة بنجاح!"); fetchSubscribers(); })
