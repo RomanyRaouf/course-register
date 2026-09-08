@@ -4,255 +4,271 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل وتأكيد الاشتراك في المحاضرة</title>
+  <!-- استيراد خط كايرو بجميع الأوزان -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Cairo', sans-serif !important; 
     }
-    body {
-      background-color: #f4f7f6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      position: relative;
+    body { 
+      background: linear-gradient(135deg, #e0e7ff, #f3f4f6); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      margin: 0; 
+      padding: 20px; 
+      position: relative; 
     }
-    .card {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      width: 100%;
-      max-width: 500px;
-      position: relative;
-      overflow: hidden;
+    .card { 
+      background: #ffffff; 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+      width: 100%; 
+      max-width: 520px; 
+      position: relative; 
+      overflow: hidden; 
+      border-top: 6px solid #4f46e5;
     }
-
     #step1, #step2 {
-      background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
+      background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
                         url('https://lh3.googleusercontent.com/d/10EJdbNiFqO0mHnCTnn2OlvmpLpmjh-VZ');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      padding: 20px;
-      border-radius: 10px;
+      background-size: cover; 
+      background-position: center; 
+      background-repeat: no-repeat; 
+      padding: 15px; 
+      border-radius: 14px;
     }
-
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
+    h2 { 
+      text-align: center; 
+      color: #1e1b4b; 
+      margin-bottom: 25px; 
+      font-weight: 800;
+      font-size: 24px;
     }
-    .form-group {
-      margin-bottom: 15px;
+    .form-group { 
+      margin-bottom: 20px; 
     }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    label { 
+      display: block; 
+      margin-bottom: 8px; 
+      font-weight: 700; 
+      color: #334155; 
       font-size: 14px;
-      background-color: rgba(255, 255, 255, 0.95);
     }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #007bff;
+    input, select { 
+      width: 100%; 
+      padding: 14px 16px; 
+      border: 2px solid #e2e8f0; 
+      border-radius: 12px; 
+      font-size: 15px; 
+      background-color: #ffffff; 
+      transition: all 0.3s ease;
     }
-    .form-row {
-      display: flex;
-      gap: 10px;
+    input:focus, select:focus { 
+      outline: none; 
+      border-color: #4f46e5; 
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
     }
-    .form-row .form-group {
-      flex: 1;
+    .form-row { 
+      display: flex; 
+      gap: 15px; 
     }
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background-color: #e60000;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 5px;
+    .form-row .form-group { 
+      flex: 1; 
     }
-    .btn:hover {
-      background-color: #cc0000;
+    .btn { 
+      width: 100%; 
+      padding: 14px; 
+      background: linear-gradient(135deg, #ef4444, #dc2626); 
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      font-size: 16px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.3s ease; 
+      margin-top: 10px; 
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
     }
-    .btn-login {
-      background-color: #007bff;
+    .btn:hover { 
+      background: linear-gradient(135deg, #dc2626, #b91c1c); 
+      transform: translateY(-2px);
     }
-    .btn-login:hover {
-      background-color: #0056b3;
+    .btn-login { 
+      background: linear-gradient(135deg, #4f46e5, #4338ca); 
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
     }
-    .btn-reset {
-      background-color: #6c757d;
+    .btn-login:hover { 
+      background: linear-gradient(135deg, #4338ca, #3730a3); 
     }
-    .btn-reset:hover {
-      background-color: #5a6268;
+    .btn-reset { 
+      background: #64748b; 
+      box-shadow: none;
     }
-    .btn-secondary {
-      background-color: #28a745;
-      margin-top: 10px;
+    .btn-reset:hover { 
+      background: #475569; 
     }
-    .btn-secondary:hover {
-      background-color: #218838;
+    .btn-secondary { 
+      background: linear-gradient(135deg, #10b981, #059669); 
+      margin-top: 10px; 
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
-    .step {
-      display: none;
+    .btn-secondary:hover { 
+      background: linear-gradient(135deg, #059669, #047857); 
     }
-    .step.active {
-      display: block;
+    .step { 
+      display: none; 
     }
-    .payment-info {
-      background-color: rgba(255, 230, 230, 0.95);
-      border: 1px solid #ffb3b3;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      text-align: center;
+    .step.active { 
+      display: block; 
     }
-    .student-welcome {
-      background-color: rgba(230, 244, 234, 0.95);
-      border: 1px solid #b7e1cd;
-      color: #137333;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-weight: bold;
-      text-align: center;
+    .payment-info { 
+      background-color: rgba(254, 226, 226, 0.95); 
+      border: 1px solid #fca5a5; 
+      padding: 20px; 
+      border-radius: 12px; 
+      margin-bottom: 20px; 
+      text-align: center; 
     }
-    .vodafone-number {
-      font-size: 22px;
-      font-weight: bold;
-      color: #e60000;
-      direction: ltr;
-      display: block;
-      margin: 10px 0;
+    .student-welcome { 
+      background-color: rgba(220, 252, 231, 0.95); 
+      border: 1px solid #86efac; 
+      color: #166534; 
+      padding: 14px; 
+      border-radius: 10px; 
+      margin-bottom: 15px; 
+      font-weight: 700; 
+      text-align: center; 
     }
-    .link-box {
-      background-color: #e6f7ff;
-      border: 1px solid #91d5ff;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
+    .vodafone-number { 
+      font-size: 26px; 
+      font-weight: 900; 
+      color: #dc2626; 
+      direction: ltr; 
+      display: block; 
+      margin: 10px 0; 
+      letter-spacing: 1px;
     }
-    .teams-btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 12px 20px;
-      background-color: #464eb8;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
+    .link-box { 
+      background-color: #f0fdf4; 
+      border: 1px solid #bbf7d0; 
+      padding: 30px; 
+      border-radius: 14px; 
+      text-align: center; 
     }
-    .teams-btn:hover {
-      background-color: #3b429f;
+    .teams-btn { 
+      display: inline-block; 
+      margin-top: 15px; 
+      padding: 14px 28px; 
+      background: linear-gradient(135deg, #4f46e5, #4338ca); 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 12px; 
+      font-weight: 700; 
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+      transition: all 0.3s;
     }
-    .admin-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      padding: 8px 15px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
+    .teams-btn:hover { 
+      background: linear-gradient(135deg, #4338ca, #3730a3); 
+      transform: translateY(-2px);
     }
-    .table-container {
-      overflow-x: auto;
-      max-height: 350px;
-      margin-bottom: 15px;
+    .admin-btn { 
+      position: absolute; 
+      top: 20px; 
+      left: 20px; 
+      padding: 10px 18px; 
+      background-color: #1e1b4b; 
+      color: #fff; 
+      border: none; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-size: 13px; 
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: background 0.2s;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
+    .admin-btn:hover { background-color: #312e81; }
+    .table-container { 
+      overflow-x: auto; 
+      max-height: 400px; 
+      margin-bottom: 15px; 
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-      white-space: nowrap;
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 13px; 
     }
-    th {
-      background-color: #007bff;
-      color: white;
-      position: sticky;
-      top: 0;
+    th, td { 
+      border-bottom: 1px solid #e2e8f0; 
+      padding: 12px 14px; 
+      text-align: center; 
+      white-space: nowrap; 
     }
-    .divider {
-      text-align: center;
-      margin: 15px 0;
-      color: #444;
-      font-size: 13px;
-      font-weight: bold;
-      position: relative;
+    th { 
+      background-color: #4f46e5; 
+      color: white; 
+      position: sticky; 
+      top: 0; 
+      font-weight: 700;
     }
-    .divider::before, .divider::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 38%;
-      height: 1px;
-      background-color: #aaa;
+    tr:hover { background-color: #f8fafc; }
+    .divider { 
+      text-align: center; 
+      margin: 20px 0; 
+      color: #64748b; 
+      font-size: 13px; 
+      font-weight: 700; 
+      position: relative; 
     }
-    .divider::before { right: 0; }
+    .divider::before, .divider::after { 
+      content: ""; 
+      position: absolute; 
+      top: 50%; 
+      width: 35%; 
+      height: 1px; 
+      background-color: #cbd5e1; 
+    }
+    .divider::before { right: 0; } 
     .divider::after { left: 0; }
-    .receipt-thumb {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 1px solid #ccc;
+    .receipt-thumb { 
+      width: 45px; 
+      height: 45px; 
+      object-type: cover; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      border: 1px solid #cbd5e1; 
+      transition: transform 0.2s;
     }
-    .status-pending { color: #d97706; font-weight: bold; }
-    .status-approved { color: #16a34a; font-weight: bold; }
+    .receipt-thumb:hover { transform: scale(1.15); }
+    .status-pending { color: #d97706; font-weight: 700; background: #fef3c7; padding: 5px 10px; border-radius: 6px; }
+    .status-approved { color: #059669; font-weight: 700; background: #d1fae5; padding: 5px 10px; border-radius: 6px; }
+    .loading { text-align: center; font-weight: 700; color: #4f46e5; display: none; margin: 15px 0; }
   </style>
 </head>
 <body>
 
-  <button class="admin-btn" onclick="openAdminPanel()">عرض المشتركين والطلبات 🔒</button>
+  <button class="admin-btn" onclick="openAdminPanel()">عرض المشتركين 🔒</button>
 
   <div class="card">
     
-    <!-- الخطوة 1: استمارة التسجيل -->
+    <!-- الخطوة 1: التسجيل -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
       <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
       <div class="divider">أو تسجيل جديد</div>
 
       <form id="registrationForm">
-        <div class="form-group">
-          <label>الاسم بالكامل:</label>
-          <input type="text" id="name" required placeholder="أدخل اسمك رباعي">
-        </div>
-        <div class="form-group">
-          <label>الرقم القومي:</label>
-          <input type="text" id="nationalId" pattern="[0-9]{14}" title="الرقم القومي مكون من 14 رقم" required placeholder="أدخل 14 رقم">
-        </div>
-        <div class="form-group">
-          <label>رقم التليفون (الواتساب):</label>
-          <input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
-        </div>
-        <div class="form-group">
-          <label>المدرسة:</label>
-          <input type="text" id="school" required placeholder="اسم مدرستك">
-        </div>
+        <div class="form-group"><label>الاسم بالكامل:</label><input type="text" id="name" required placeholder="أدخل اسمك رباعي"></div>
+        <div class="form-group"><label>الرقم القومي:</label><input type="text" id="nationalId" pattern="[0-9]{14}" required placeholder="أدخل 14 رقم"></div>
+        <div class="form-group"><label>رقم التليفون (واتساب):</label><input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX"></div>
+        <div class="form-group"><label>المدرسة:</label><input type="text" id="school" required placeholder="اسم مدرستك"></div>
         <div class="form-group">
           <label>الصف الدراسي:</label>
           <select id="grade" required>
@@ -262,132 +278,109 @@
             <option value="الثالث الثانوي">الثالث الثانوي</option>
           </select>
         </div>
-
         <div class="form-group">
           <label>عدد المرات في الأسبوع:</label>
           <select id="frequency" required>
-            <option value="">اختر عدد الحصص/المحاضرات أسبوعياً</option>
+            <option value="">اختر عدد الحصص أسبوعياً</option>
             <option value="مرة واحدة أسبوعياً">مرة واحدة أسبوعياً</option>
             <option value="مرتان أسبوعياً">مرتان أسبوعياً</option>
             <option value="3 مرات أسبوعياً">3 مرات أسبوعياً</option>
             <option value="4 مرات أسبوعياً">4 مرات أسبوعياً</option>
           </select>
         </div>
-
         <div class="form-row">
-          <div class="form-group">
-            <label>تاريخ البدء:</label>
-            <input type="date" id="lectureDate" required>
-          </div>
-          <div class="form-group">
-            <label>الوقت / التوقيت:</label>
-            <input type="time" id="lectureTime" required>
-          </div>
+          <div class="form-group"><label>تاريخ البدء:</label><input type="date" id="lectureDate" required></div>
+          <div class="form-group"><label>الوقت:</label><input type="time" id="lectureTime" required></div>
         </div>
-
         <button type="button" class="btn" onclick="goToStep2()">التالي (متابعة الدفع)</button>
         <button type="button" class="btn btn-reset" onclick="resetForm()">محو المدخلات</button>
       </form>
     </div>
 
-    <!-- الخطوة 2: تعليمات الدفع وإرسال الإيصال -->
+    <!-- الخطوة 2: الدفع ورفع الإيصال -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش</h2>
       <div id="welcomeMessage" class="student-welcome" style="display: none;"></div>
-
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
-        <p style="font-size: 13px; color: #555;">بعد التحويل، اكتب رقمك المحول منه وارفع سكرين شوت أو صورة الإيصال للمراجعة.</p>
+        <p style="font-size: 13px; color: #475569;">بعد التحويل، اكتب رقمك المحول منه وارفع سكرين شوت الإيصال.</p>
       </div>
 
       <form id="paymentForm">
-        <div class="form-group">
-          <label>رقم الموبايل المحول منه:</label>
-          <input type="tel" id="senderPhone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX">
-        </div>
-        <div class="form-group">
-          <label>رفع صورة إيصال الدفع (سكرين شوت):</label>
-          <input type="file" id="receiptImage" accept="image/*" required>
-        </div>
-        <button type="submit" class="btn">إرسال الطلب للمراجعة</button>
+        <div class="form-group"><label>رقم الموبايل المحول منه:</label><input type="tel" id="senderPhone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX"></div>
+        <div class="form-group"><label>رفع صورة إيصال الدفع:</label><input type="file" id="receiptImage" accept="image/*" required></div>
+        <div id="loadingText" class="loading">جاري رفع البيانات والإيصال، يرجى الانتظار...</div>
+        <button type="submit" class="btn" id="submitBtn">إرسال الطلب للمراجعة</button>
         <button type="button" class="btn btn-reset" onclick="resetForm()">إلغاء</button>
       </form>
     </div>
 
-    <!-- الخطوة 3: عرض رابط المحاضرة (عند القبول) أو انتظار المراجعة -->
+    <!-- الخطوة 3: حالة الطلب -->
     <div id="step3" class="step">
       <h2 id="step3Title">حالة الطلب</h2>
       <div class="link-box" id="pendingBox">
-        <p style="font-weight: bold; color: #d97706;">طلبك قيد المراجعة من الإدارة حالياً.</p>
-        <p>سيتم تفعيل الرابط فور قبول الإدارة لعملية التحويل الخاصة بك. يمكنك تسجيل الدخول لاحقاً برقمك القومي لمتابعة الحالة.</p>
+        <p style="font-weight: 700; color: #d97706; font-size: 16px;">طلبك قيد المراجعة من الإدارة حالياً.</p>
+        <p style="color: #475569; margin-top: 8px;">سيتم تفعيل الرابط فور قبول الإدارة لعملية التحويل الخاصة بك.</p>
       </div>
-      <div class="link-box" id="approvedBox" style="display: none; background-color: #e6f7ff;">
-        <p>تم قبول طلبك بنجاح!</p>
-        <p>يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
-        <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">
-          الانضمام للمحاضرة على Teams
-        </a>
+      <div class="link-box" id="approvedBox" style="display: none;">
+        <p style="font-weight: 700; color: #059669; font-size: 16px;">تم قبول طلبك بنجاح!</p>
+        <p style="color: #475569;">يمكنك الانضمام إلى المحاضرة عبر الرابط التالي:</p>
+        <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">الانضمام للمحاضرة على Teams</a>
       </div>
-      <button type="button" class="btn btn-reset" style="margin-top: 15px;" onclick="resetForm()">العودة للرئيسية</button>
+      <button type="button" class="btn btn-reset" style="margin-top: 20px;" onclick="resetForm()">العودة للرئيسية</button>
     </div>
 
-    <!-- لوحة تحكم المشتركين (خاصة بالإدارة) -->
+    <!-- لوحة تحكم الإدارة -->
     <div id="adminStep" class="step">
       <h2>لوحة تحكم الإدارة (الطلبات)</h2>
+      <div id="adminLoading" class="loading" style="display:block;">جاري تحميل البيانات من الشيت...</div>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>الاسم</th>
-              <th>الرقم القومي</th>
-              <th>التليفون</th>
-              <th>رقم المحول</th>
-              <th>الإيصال</th>
-              <th>الحالة</th>
-              <th>الإجراء</th>
+              <th>#</th><th>الاسم</th><th>القومي</th><th>التليفون</th><th>المحول</th><th>الإيصال</th><th>الحالة</th><th>الإجراء</th>
             </tr>
           </thead>
-          <tbody id="subscribersTable">
-            <!-- البيانات تضاف هنا -->
-          </tbody>
+          <tbody id="subscribersTable"></tbody>
         </table>
       </div>
-      <button class="btn btn-secondary" onclick="exportToCSV()">تحميل البيانات (Excel/CSV)</button>
-      <button class="btn btn-reset" onclick="closeAdminPanel()" style="background-color: #333; margin-top: 5px;">العودة للصفحة الرئيسية</button>
+      <button class="btn btn-reset" onclick="closeAdminPanel()" style="background-color: #1e1b4b;">العودة للرئيسية</button>
     </div>
 
   </div>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFSqmEDpRDj9twuwsP6le6aCMAg65rcDhUQ-oMt8LJchdHYmUr1dCktvDg39H9u0nH/exec";
     let studentData = {};
 
     function loginByNationalId() {
       const nationalIdInput = prompt("أدخل الرقم القومي المسجل مسبقاً (14 رقم):");
       if (!nationalIdInput) return;
 
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput.trim());
-
-      if (existingUser) {
-        studentData = { ...existingUser };
-        checkUserStatusAndRedirect(studentData);
-      } else {
-        alert("عذراً، هذا الرقم القومي غير مسجل في النظام.");
-      }
+      fetch(SCRIPT_URL + "?action=checkStatus&nationalId=" + encodeURIComponent(nationalIdInput.trim()))
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          studentData.nationalId = nationalIdInput.trim();
+          studentData.status = data.userStatus;
+          checkUserStatusAndRedirect(studentData);
+        } else {
+          alert("عذراً، هذا الرقم القومي غير مسجل في النظام.");
+        }
+      })
+      .catch(err => alert("حدث خطأ في الاتصال بالشبكة."));
     }
 
     function checkUserStatusAndRedirect(user) {
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById('step3').classList.add('active');
       
-      if (user.status === 'approved') {
-        document.getElementById('step3').classList.add('active');
+      if (user.status === 'مقبول') {
         document.getElementById('step3Title').innerText = "تم القبول بنجاح!";
         document.getElementById('pendingBox').style.display = 'none';
         document.getElementById('approvedBox').style.display = 'block';
       } else {
-        document.getElementById('step3').classList.add('active');
         document.getElementById('step3Title').innerText = "قيد المراجعة";
         document.getElementById('pendingBox').style.display = 'block';
         document.getElementById('approvedBox').style.display = 'none';
@@ -396,22 +389,10 @@
 
     function goToStep2() {
       const form = document.getElementById('registrationForm');
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      const nationalIdInput = document.getElementById('nationalId').value.trim();
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const existingUser = subscribers.find(sub => sub.nationalId === nationalIdInput);
-
-      if (existingUser) {
-        alert(`عذراً، هذا الرقم القومي مسجل بالفعل باسم:\n(${existingUser.name})\nاستخدم زر "دخول مشترك سابق".`);
-        return;
-      }
+      if (!form.checkValidity()) { form.reportValidity(); return; }
 
       studentData.name = document.getElementById('name').value.trim();
-      studentData.nationalId = nationalIdInput;
+      studentData.nationalId = document.getElementById('nationalId').value.trim();
       studentData.phone = document.getElementById('phone').value.trim();
       studentData.school = document.getElementById('school').value.trim();
       studentData.grade = document.getElementById('grade').value;
@@ -424,55 +405,54 @@
       document.getElementById('step2').classList.add('active');
     }
 
-    // إرسال الدفع وتحويل الصورة إلى Base64 لحفظها محلياً
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
-
       studentData.senderPhone = document.getElementById('senderPhone').value.trim();
-      studentData.status = 'pending'; // الحالة قيد الانتظار
-      studentData.date = new Date().toLocaleString('ar-EG');
-
+      
       const fileInput = document.getElementById('receiptImage');
       const file = fileInput.files[0];
+      
+      document.getElementById('loadingText').style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
 
       if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          studentData.receiptImage = event.target.result; // تخزين الصورة ككود نصي
-          saveAndFinish(studentData);
+          studentData.receiptBase64 = event.target.result;
+          sendDataToSheet(studentData);
         };
         reader.readAsDataURL(file);
       } else {
-        studentData.receiptImage = '';
-        saveAndFinish(studentData);
+        sendDataToSheet(studentData);
       }
     });
 
-    function saveAndFinish(data) {
-      let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const index = subscribers.findIndex(s => s.nationalId === data.nationalId);
-      
-      if (index !== -1) {
-        subscribers[index] = data;
-      } else {
-        subscribers.push(data);
-      }
-
-      localStorage.setItem('subscribers', JSON.stringify(subscribers));
-
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step3').classList.add('active');
-      document.getElementById('step3Title').innerText = "تم إرسال طلبك";
-      document.getElementById('pendingBox').style.display = 'block';
-      document.getElementById('approvedBox').style.display = 'none';
+    function sendDataToSheet(data) {
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(response => {
+        document.getElementById('loadingText').style.display = 'none';
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+        document.getElementById('step3Title').innerText = "تم إرسال طلبك";
+        document.getElementById('pendingBox').style.display = 'block';
+        document.getElementById('approvedBox').style.display = 'none';
+      })
+      .catch(err => {
+        document.getElementById('loadingText').style.display = 'none';
+        document.getElementById('submitBtn').disabled = false;
+        alert("حدث خطأ أثناء رفع البيانات. تأكد من اتصال الإنترنت.");
+      });
     }
 
     function resetForm() {
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentForm').reset();
-      document.getElementById('welcomeMessage').style.display = 'none';
       studentData = {};
-
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
       document.getElementById('step1').classList.add('active');
     }
@@ -480,9 +460,9 @@
     function openAdminPanel() {
       const password = prompt("أدخل كلمة السر لعرض الطلبات:");
       if (password === "852456") {
-        renderSubscribers();
         document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
         document.getElementById('adminStep').classList.add('active');
+        fetchSubscribers();
       } else if (password !== null) {
         alert("كلمة السر غير صحيحة!");
       }
@@ -492,69 +472,61 @@
       resetForm();
     }
 
-    function renderSubscribers() {
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const tbody = document.getElementById('subscribersTable');
-      tbody.innerHTML = '';
+    function fetchSubscribers() {
+      document.getElementById('adminLoading').style.display = 'block';
+      fetch(SCRIPT_URL + "?action=getAll")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('adminLoading').style.display = 'none';
+        const tbody = document.getElementById('subscribersTable');
+        tbody.innerHTML = '';
 
-      if (subscribers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8">لا يوجد طلبات مسجلة حتى الآن</td></tr>';
-        return;
-      }
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8">لا يوجد طلبات مسجلة حتى الآن</td></tr>';
+          return;
+        }
 
-      subscribers.forEach((sub, index) => {
-        const statusText = sub.status === 'approved' ? '<span class="status-approved">مقبول</span>' : '<span class="status-pending">قيد المراجعة</span>';
-        const actionBtn = sub.status === 'approved' 
-          ? '<span style="color:green; font-weight:bold;">تم القبول</span>' 
-          : `<button class="btn-secondary" style="padding:5px 10px; font-size:11px;" onclick="approveStudent('${sub.nationalId}')">قبول الطلب</button>`;
-        
-        const imgThumb = sub.receiptImage ? `<img src="${sub.receiptImage}" class="receipt-thumb" onclick="window.open('${sub.receiptImage}')" title="اضغط لتكبير الصورة">` : 'لا توجد';
+        data.forEach((sub, index) => {
+          const statusText = sub.status === 'مقبول' ? '<span class="status-approved">مقبول</span>' : '<span class="status-pending">قيد المراجعة</span>';
+          const actionBtn = sub.status === 'مقبول' 
+            ? '<span style="color:#059669; font-weight:700;">تم القبول</span>' 
+            : `<button class="btn-secondary" style="padding:6px 12px; font-size:12px; margin:0;" onclick="approveStudent('${sub.nationalId}')">قبول الطلب</button>`;
+          
+          const imgThumb = sub.receiptImage ? `<img src="${sub.receiptImage}" class="receipt-thumb" onclick="window.open('${sub.receiptImage}')" title="اضغط لعرض الإيصال">` : 'لا توجد';
 
-        const row = `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${sub.name}</td>
-            <td>${sub.nationalId}</td>
-            <td>${sub.phone}</td>
-            <td>${sub.senderPhone || '-'}</td>
-            <td>${imgThumb}</td>
-            <td>${statusText}</td>
-            <td>${actionBtn}</td>
-          </tr>
-        `;
-        tbody.innerHTML += row;
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${sub.name}</td>
+              <td>${sub.nationalId}</td>
+              <td>${sub.phone}</td>
+              <td>${sub.senderPhone || '-'}</td>
+              <td>${imgThumb}</td>
+              <td>${statusText}</td>
+              <td>${actionBtn}</td>
+            </tr>
+          `;
+        });
+      })
+      .catch(err => {
+        document.getElementById('adminLoading').style.display = 'none';
+        alert("فشل تحميل البيانات من الشيت.");
       });
     }
 
-    // قبول الطالب من الإدارة
     function approveStudent(nationalId) {
-      let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      const index = subscribers.findIndex(s => s.nationalId === nationalId);
-      if (index !== -1) {
-        subscribers[index].status = 'approved';
-        localStorage.setItem('subscribers', JSON.stringify(subscribers));
-        renderSubscribers();
-        alert("تم قبول الطالب بنجاح، سيظهر له رابط المحاضرة عند تسجيل الدخول.");
-      }
-    }
-
-    function exportToCSV() {
-      const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
-      if (subscribers.length === 0) {
-        alert("لا توجد بيانات لتصديرها!");
-        return;
-      }
-
-      let csvContent = "\uFEFFالاسم,الرقم القومي,رقم التليفون,المدرسة,الصف,عدد المرات,تاريخ البدء,الوقت,رقم المحول,الحالة,تاريخ التسجيل\n";
-      subscribers.forEach(s => {
-        csvContent += `"${s.name}","${s.nationalId}","${s.phone}","${s.school}","${s.grade}","${s.frequency || ''}","${s.lectureDate || ''}","${s.lectureTime || ''}","${s.senderPhone || ''}","${s.status || 'pending'}","${s.date || ''}"\n`;
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "طلبات_المشتركين.csv";
-      link.click();
+      if(!confirm("هل أنت متأكد من قبول هذا الطالب وتفعيل رابط المحاضرة له؟")) return;
+      
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "approve", nationalId: nationalId })
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert("تمت الموافقة بنجاح!");
+        fetchSubscribers();
+      })
+      .catch(err => alert("حدث خطأ أثناء الموافقة."));
     }
   </script>
 </body>
