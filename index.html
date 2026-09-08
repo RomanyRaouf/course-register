@@ -55,10 +55,11 @@
 
   <div class="card">
     
+    <!-- خطوة التسجيل أو الدخول -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
-      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك سابق بالرقم القومي 🔑</button>
-      <div class="divider">أو تسجيل جديد</div>
+      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك بالرقم القومي (للمتابعة أو حضور المحاضرة) 🔑</button>
+      <div class="divider">أو تسجيل بيانات طالب جديد</div>
 
       <form id="registrationForm">
         <div class="form-grid">
@@ -89,16 +90,17 @@
           <div class="form-group"><label>الوقت:</label><input type="time" id="lectureTime" required></div>
         </div>
 
+        <div id="step1Loading" class="loading">جاري فحص البيانات... ⏳</div>
         <div style="display: flex; gap: 15px; margin-top: 20px;">
-          <button type="button" class="btn" style="margin-top:0;" onclick="goToStep2()">التالي (متابعة الدفع)</button>
+          <button type="button" class="btn" id="nextBtn" style="margin-top:0;" onclick="handleRegistrationNext()">التالي (إرسال طلب اشتراك)</button>
           <button type="button" class="btn btn-reset" style="margin-top:0;" onclick="resetForm()">محو المدخلات</button>
         </div>
       </form>
     </div>
 
+    <!-- خطوة الدفع (لفودافون كاش) -->
     <div id="step2" class="step">
       <h2>الدفع عبر فودافون كاش للمحاضرة</h2>
-      <div id="welcomeMessage" class="student-welcome" style="display: none;"></div>
       <div class="payment-info">
         <p>يرجى تحويل مبلغ <strong>20 جنيه مصري</strong> إلى الرقم التالي:</p>
         <span class="vodafone-number">01080963679</span>
@@ -115,18 +117,26 @@
       </form>
     </div>
 
+    <!-- شاشة الحالة أو عرض رابط الـ Teams -->
     <div id="step3" class="step">
       <h2 id="step3Title">حالة الطلب</h2>
-      <div class="link-box" id="pendingBox">
-        <p style="font-weight: 700; color: #d97706; font-size: 16px;">تم تسجيل طلبك وإرسال إيصال الدفع، وهو قيد المراجعة من الإدارة حالياً.</p>
+      
+      <!-- مربع الانتظار (لو لسه قيد المراجعة) -->
+      <div class="link-box" id="pendingBox" style="display: none;">
+        <p style="font-weight: 700; color: #d97706; font-size: 16px;">تم تسجيل طلبك وإرسال إيصال الدفع، وهو قيد المراجعة من الإدارة حالياً. برجاء الانتظار لحين القبول.</p>
       </div>
+
+      <!-- مربع القبول الرائع (لو الإدارة قبلته، يظهر هنا رابط المحاضرة فوراً ومباشرة) -->
       <div class="link-box" id="approvedBox" style="display: none;">
-        <p style="font-weight: 700; color: #059669; font-size: 16px;">تم قبول الدفع بنجاح!</p>
-        <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">الانضمام للمحاضرة على Teams</a>
+        <p style="font-weight: 700; color: #059669; font-size: 18px; margin-bottom: 5px;">مرحباً بك! تم قبول اشتراكك بنجاح 🎉</p>
+        <p style="color: #334155; font-size: 14px;">يمكنك الآن الانضمام للمحاضرة في موعدها المحدد عبر زر مايكروسوفت تيمز أدناه:</p>
+        <a href="https://teams.live.com/meet/9351436817068?p=OAZjXLnkP4FuNitUnI" target="_blank" class="teams-btn">الانضمام للمحاضرة على Teams 🚀</a>
       </div>
-      <button type="button" class="btn btn-reset" style="margin-top: 20px; max-width: 250px; margin-right: auto; margin-left: auto; display: block;" onclick="resetForm()">العودة للرئيسية</button>
+
+      <button type="button" class="btn btn-reset" style="margin-top: 25px; max-width: 250px; margin-right: auto; margin-left: auto; display: block;" onclick="resetForm()">العودة للرئيسية</button>
     </div>
 
+    <!-- لوحة التحكم -->
     <div id="adminStep" class="step">
       <h2>لوحة تحكم الإدارة (الطلبات)</h2>
       <div id="adminLoading" class="loading" style="display:block;">جاري تحميل البيانات...</div>
@@ -148,8 +158,9 @@
 
     let studentData = {};
 
+    // 1. زر الدخول السريع بالرقم القومي (ليعرف الطالب حالته: لو مقبول يظهر له رابط المحاضرة فوراً، لو قيد المراجعة يظهر له الانتظار)
     function loginByNationalId() {
-      const nationalIdInput = prompt("أدخل الرقم القومي المسجل مسبقاً (14 رقم):");
+      const nationalIdInput = prompt("أدخل رقمك القومي المكون من 14 رقماً:");
       if (!nationalIdInput) return;
       const trimmedId = nationalIdInput.trim();
       if (trimmedId.length !== 14) {
@@ -159,7 +170,7 @@
 
       const loginBtn = document.querySelector('.btn-login');
       const originalText = loginBtn.innerText;
-      loginBtn.innerText = "جاري التحقق... ⏳";
+      loginBtn.innerText = "جاري التحقق من سجلك... ⏳";
 
       fetch(SCRIPT_URL + "?action=getAll")
       .then(res => res.json())
@@ -169,37 +180,22 @@
         
         if (foundStudent) {
           studentData = { ...foundStudent };
-          
-          document.getElementById('name').value = foundStudent.name || '';
-          document.getElementById('nationalId').value = foundStudent.nationalId || '';
-          document.getElementById('phone').value = foundStudent.phone || '';
-          document.getElementById('school').value = foundStudent.school || '';
-          document.getElementById('grade').value = foundStudent.grade || '';
-          document.getElementById('frequency').value = foundStudent.frequency || '';
-          document.getElementById('lectureDate').value = foundStudent.lectureDate || '';
-          document.getElementById('lectureTime').value = foundStudent.lectureTime || '';
-
           document.getElementById('step1').classList.remove('active');
+          document.getElementById('step3').classList.add('active');
 
-          // التعديل الجوهري هنا:
-          // إذا كان الطلب السابق ما زال "قيد المراجعة" فعلياً، نظهر له شاشة الانتظار
-          // أما لو كان "مقبولاً" (وهذا طبيعي لأنه حجز قبل كده ودخل)، فننقله لخطوة الدفع (Step 2) عشان يحجز محاضرة جديدة ويرفع إيصال جديد
-          if (foundStudent.status === 'قيد المراجعة') {
-            document.getElementById('step3').classList.add('active');
+          // الفحص الذكي: لو مقبول -> افتح له رابط Teams مباشرة! لو قيد المراجعة -> أظهر له رسالة الانتظار
+          if (foundStudent.status === 'مقبول') {
+            document.getElementById('step3Title').innerText = "أهلاً بك يا " + foundStudent.name;
+            document.getElementById('pendingBox').style.display = 'none';
+            document.getElementById('approvedBox').style.display = 'block';
+          } else {
             document.getElementById('step3Title').innerText = "حالة الطلب الحالي";
             document.getElementById('pendingBox').style.display = 'block';
             document.getElementById('approvedBox').style.display = 'none';
-          } else {
-            // لو حالته مقبول (محاضرة قديمة وانتهت)، يروح على خطوة الدفع مباشرة لحجز المحاضرة الجديدة
-            const welcomeBox = document.getElementById('welcomeMessage');
-            welcomeBox.style.display = 'block';
-            welcomeBox.innerText = `أهلاً بك يا ${foundStudent.name}، يرجى إتمام دفع رسوم المحاضرة الجديدة ورفع الإيصال.`;
-            
-            document.getElementById('step2').classList.add('active');
           }
 
         } else {
-          alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى عمل تسجيل جديد.");
+          alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديد بالأسفل.");
         }
       })
       .catch(err => {
@@ -208,22 +204,59 @@
       });
     }
 
-    function goToStep2() {
+    // 2. عند تسجيل طالب جديد بالكامل والضغط على "التالي"
+    function handleRegistrationNext() {
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) { form.reportValidity(); return; }
 
-      studentData.name = document.getElementById('name').value.trim();
-      studentData.nationalId = document.getElementById('nationalId').value.trim();
-      studentData.phone = document.getElementById('phone').value.trim();
-      studentData.school = document.getElementById('school').value.trim();
-      studentData.grade = document.getElementById('grade').value;
-      studentData.frequency = document.getElementById('frequency').value;
-      studentData.lectureDate = document.getElementById('lectureDate').value;
-      studentData.lectureTime = document.getElementById('lectureTime').value;
+      const inputNationalId = document.getElementById('nationalId').value.trim();
+      
+      document.getElementById('step1Loading').style.display = 'block';
+      document.getElementById('nextBtn').disabled = true;
 
-      document.getElementById('welcomeMessage').style.display = 'none';
-      document.getElementById('step1').classList.remove('active');
-      document.getElementById('step2').classList.add('active');
+      fetch(SCRIPT_URL + "?action=getAll")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('step1Loading').style.display = 'none';
+        document.getElementById('nextBtn').disabled = false;
+
+        const foundStudent = data.find(sub => String(sub.nationalId).trim() === inputNationalId);
+
+        // تجهيز بيانات الطالب
+        studentData.name = document.getElementById('name').value.trim();
+        studentData.nationalId = inputNationalId;
+        studentData.phone = document.getElementById('phone').value.trim();
+        studentData.school = document.getElementById('school').value.trim();
+        studentData.grade = document.getElementById('grade').value;
+        studentData.frequency = document.getElementById('frequency').value;
+        studentData.lectureDate = document.getElementById('lectureDate').value;
+        studentData.lectureTime = document.getElementById('lectureTime').value;
+
+        document.getElementById('step1').classList.remove('active');
+
+        if (foundStudent && foundStudent.status === 'مقبول') {
+          // لو هو مسجل مسبقاً وحالته "مقبول بالفعل"، لا داعي لإجباره على الدفع مجدداً، نظهر له رابط الـ Teams فوراً
+          document.getElementById('step3').classList.add('active');
+          document.getElementById('step3Title').innerText = "أهلاً بك يا " + studentData.name;
+          document.getElementById('pendingBox').style.display = 'none';
+          document.getElementById('approvedBox').style.display = 'block';
+        } else if (foundStudent && foundStudent.status === 'قيد المراجعة') {
+          // لو طلبه لسه قيد المراجعة
+          document.getElementById('step3').classList.add('active');
+          document.getElementById('step3Title').innerText = "حالة الطلب الحالي";
+          document.getElementById('pendingBox').style.display = 'block';
+          document.getElementById('approvedBox').style.display = 'none';
+        } else {
+          // لو طالب جديد تماماً -> يذهب لخطوة رفع إيصال الدفع بشكل طبيعي
+          document.getElementById('step2').classList.add('active');
+        }
+
+      })
+      .catch(err => {
+        document.getElementById('step1Loading').style.display = 'none';
+        document.getElementById('nextBtn').disabled = false;
+        alert("حدث خطأ أثناء التحقق من البيانات. حاول مرة أخرى.");
+      });
     }
 
     function compressImage(file, callback) {
@@ -284,7 +317,7 @@
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
-        document.getElementById('step3Title').innerText = "تم إرسال إيصال الدفع الجديد";
+        document.getElementById('step3Title').innerText = "تم إرسال إيصال الدفع";
         document.getElementById('pendingBox').style.display = 'block';
         document.getElementById('approvedBox').style.display = 'none';
       })
@@ -340,7 +373,7 @@
     }
 
     function approveStudent(nationalId) {
-      if(!confirm("هل أنت متأكد من قبول هذا الطالب للمحاضرة الجديدة؟")) return;
+      if(!confirm("هل أنت متأكد من قبول هذا الطالب للمحاضرة؟")) return;
       fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "approve", nationalId: nationalId }) })
       .then(res => res.json())
       .then(response => { alert("تمت الموافقة بنجاح!"); fetchSubscribers(); })
