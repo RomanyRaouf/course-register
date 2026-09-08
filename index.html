@@ -23,7 +23,7 @@
     input:focus, select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
     .btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
     .btn:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); transform: translateY(-2px); }
-    .btn-login { background: linear-gradient(135deg, #4f46e5, #4338ca); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); max-width: 350px; margin: 0 auto 20px auto; display: block; }
+    .btn-login { background: linear-gradient(135deg, #4f46e5, #4338ca); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); max-width: 380px; margin: 0 auto 20px auto; display: block; }
     .btn-reset { background: #64748b; box-shadow: none; }
     .btn-secondary { background: linear-gradient(135deg, #10b981, #059669); margin-top: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
     .btn-renew { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); margin-top: 15px; display: inline-block; padding: 12px 24px; color: white; text-decoration: none; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; }
@@ -58,14 +58,14 @@
     <!-- الخطوة الأولى: تسجيل أو دخول -->
     <div id="step1" class="step active">
       <h2>تسجيل البيانات والميعاد</h2>
-      <button type="button" class="btn btn-login" onclick="loginByNationalId()">دخول مشترك بالرقم القومي (لحضور المحاضرة) 🔑</button>
+      <button type="button" class="btn btn-login" onclick="loginByPhone()">دخول مشترك برقم التليفون (واتساب) 🔑</button>
       <div class="divider">أو تسجيل بيانات طالب جديد</div>
 
       <form id="registrationForm">
         <div class="form-grid">
           <div class="form-group"><label>الاسم بالكامل:</label><input type="text" id="name" required placeholder="أدخل اسمك رباعي"></div>
-          <div class="form-group"><label>الرقم القومي:</label><input type="text" id="nationalId" pattern="[0-9]{14}" required placeholder="أدخل 14 رقم"></div>
-          <div class="form-group"><label>رقم التليفون (واتساب):</label><input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX"></div>
+          <div class="form-group"><label>رقم التليفون (واتساب - للاستخدام والدخول):</label><input type="tel" id="phone" pattern="[0-9]{11}" required placeholder="01XXXXXXXXX"></div>
+          <div class="form-group"><label>الرقم القومي (14 رقم):</label><input type="text" id="nationalId" pattern="[0-9]{14}" required placeholder="أدخل 14 رقم"></div>
           <div class="form-group"><label>المدرسة:</label><input type="text" id="school" required placeholder="اسم مدرستك"></div>
           <div class="form-group">
             <label>الصف الدراسي:</label>
@@ -148,7 +148,7 @@
       <div class="table-container">
         <table>
           <thead>
-            <tr><th>#</th><th>الاسم</th><th>القومي</th><th>التليفون</th><th>المحول</th><th>الإيصال</th><th>الحالة</th><th>الإجراء</th></tr>
+            <tr><th>#</th><th>الاسم</th><th>التليفون</th><th>القومي</th><th>المحول</th><th>الإيصال</th><th>الحالة</th><th>الإجراء</th></tr>
           </thead>
           <tbody id="subscribersTable"></tbody>
         </table>
@@ -159,17 +159,29 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzepUCph__mmJgk40iD2pXlEoEVwztXjDVJ_Se9YhTk50UyEPdmjLC-WJOZWcgLzsbk/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9hqv64czrDzoZWq6wH8L2RQHjONquvqkd-pBP1TC9T3XMRD2HolL--MQm86ldI0Fn/exec"; // ضع رابط الـ Apps Script الخاص بك هنا
 
     let studentData = {};
 
-    // 1. الدخول بالرقم القومي
-    function loginByNationalId() {
-      const nationalIdInput = prompt("أدخل رقمك القومي المكون من 14 رقماً:");
-      if (!nationalIdInput) return;
-      const trimmedId = nationalIdInput.trim();
-      if (trimmedId.length !== 14) {
-        alert("يرجى إدخال 14 رقم بشكل صحيح.");
+    // دالة لتوحيد الأرقام (تحويل الأرقام العربية إلى إنجليزية وإزالة المسافات)
+    function normalizeDigits(str) {
+      if (!str) return "";
+      const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+      let converted = String(str).trim();
+      for (let i = 0; i < 10; i++) {
+        converted = converted.replace(new RegExp(arabicNumbers[i], 'g'), i);
+      }
+      return converted.replace(/\D/g, ''); // الاحتفاظ بالأرقام فقط
+    }
+
+    // 1. الدخول برقم التليفون
+    function loginByPhone() {
+      const phoneInput = prompt("أدخل رقم تليفونك (واتساب) المسجل به:");
+      if (!phoneInput) return;
+      const normalizedPhone = normalizeDigits(phoneInput);
+      
+      if (normalizedPhone.length !== 11) {
+        alert("يرجى إدخال رقم تليفون صحيح مكون من 11 رقماً.");
         return;
       }
 
@@ -181,7 +193,7 @@
       .then(res => res.json())
       .then(data => {
         loginBtn.innerText = originalText;
-        const foundStudent = data.find(sub => String(sub.nationalId).trim() === trimmedId);
+        const foundStudent = data.find(sub => normalizeDigits(sub.phone) === normalizedPhone);
         
         if (foundStudent) {
           studentData = { ...foundStudent };
@@ -199,7 +211,7 @@
           }
 
         } else {
-          alert("عذراً، هذا الرقم القومي غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديد بالأسفل.");
+          alert("عذراً، رقم التليفون هذا غير مسجل في النظام. يرجى ملء بيانات التسجيل الجديد بالأسفل.");
         }
       })
       .catch(err => {
@@ -208,11 +220,10 @@
       });
     }
 
-    // 2. زر تجديد الاشتراك (ينقل الطالب مباشرة لخطوة رفع الإيصال الجديد ودفع المحاضرة القادمة)
+    // 2. زر تجديد الاشتراك (ينقل الطالب مباشرة لخطوة رفع الإيصال الجديد)
     function goToRenew() {
       document.getElementById('step3').classList.remove('active');
       document.getElementById('step2').classList.add('active');
-      // تنظيف حقل الإيصال القديم ليرفع إيصال جديد
       document.getElementById('paymentForm').reset();
     }
 
@@ -221,7 +232,7 @@
       const form = document.getElementById('registrationForm');
       if (!form.checkValidity()) { form.reportValidity(); return; }
 
-      const inputNationalId = document.getElementById('nationalId').value.trim();
+      const inputPhone = normalizeDigits(document.getElementById('phone').value);
       
       document.getElementById('step1Loading').style.display = 'block';
       document.getElementById('nextBtn').disabled = true;
@@ -232,11 +243,11 @@
         document.getElementById('step1Loading').style.display = 'none';
         document.getElementById('nextBtn').disabled = false;
 
-        const foundStudent = data.find(sub => String(sub.nationalId).trim() === inputNationalId);
+        const foundStudent = data.find(sub => normalizeDigits(sub.phone) === inputPhone);
 
         studentData.name = document.getElementById('name').value.trim();
-        studentData.nationalId = inputNationalId;
-        studentData.phone = document.getElementById('phone').value.trim();
+        studentData.phone = inputPhone;
+        studentData.nationalId = normalizeDigits(document.getElementById('nationalId').value);
         studentData.school = document.getElementById('school').value.trim();
         studentData.grade = document.getElementById('grade').value;
         studentData.frequency = document.getElementById('frequency').value;
@@ -246,7 +257,6 @@
         document.getElementById('step1').classList.remove('active');
 
         if (foundStudent && foundStudent.status === 'مقبول') {
-          // لو هو مقبول مسبقاً، يظهر له رابط Teams مع خيار التجديد
           document.getElementById('step3').classList.add('active');
           document.getElementById('step3Title').innerText = "أهلاً بك يا " + studentData.name;
           document.getElementById('pendingBox').style.display = 'none';
@@ -257,7 +267,6 @@
           document.getElementById('pendingBox').style.display = 'block';
           document.getElementById('approvedBox').style.display = 'none';
         } else {
-          // طالب جديد تماماً يذهب لخطوة الدفع
           document.getElementById('step2').classList.add('active');
         }
 
@@ -299,7 +308,7 @@
 
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      studentData.senderPhone = document.getElementById('senderPhone').value.trim();
+      studentData.senderPhone = normalizeDigits(document.getElementById('senderPhone').value);
       const fileInput = document.getElementById('receiptImage');
       const file = fileInput.files[0];
       
@@ -318,12 +327,11 @@
     });
 
     function sendDataToSheet(data) {
-      data.status = "قيد المراجعة"; // عند التجديد أو التسجيل الجديد، تعود الحالة قيد المراجعة لحين قبول الإيصال الجديد
+      data.status = "قيد المراجعة";
 
       fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(data) })
       .then(res => res.json())
       .then(response => {
-        document.getElementById('loadingTest').style.display = 'none'; // تم تصحيحها لـ loadingText
         document.getElementById('loadingText').style.display = 'none';
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('step2').classList.remove('active');
@@ -374,21 +382,19 @@
         }
         data.forEach((sub, index) => {
           const statusText = sub.status === 'مقبول' ? '<span class="status-approved">مقبول</span>' : '<span class="status-pending">قيد المراجعة</span>';
-          const actionBtn = sub.status === 'مقبول' ? '<span style="color:#059669; font-weight:700;">تم القبول</span>' : `<button class="btn-secondary" style="padding:6px 12px; font-size:12px; margin:0;" onclick="approveStudent('${sub.nationalId}')">قبول الطلب</button>`;
+          const actionBtn = sub.status === 'مقبول' ? '<span style="color:#059669; font-weight:700;">تم القبول</span>' : `<button class="btn-secondary" style="padding:6px 12px; font-size:12px; margin:0;" onclick="approveStudent('${sub.phone}')">قبول الطلب</button>`;
           const imgThumb = (sub.receiptImage && sub.receiptImage.trim() !== '') ? `<img src="${sub.receiptImage}" class="receipt-thumb" onclick="window.open('${sub.receiptImage}')">` : '<span style="color: #94a3b8; font-size: 12px;">بدون</span>';
 
-          tbody.innerHTML += `<tr><td>${index + 1}</td><td>${sub.name}</td><td>${sub.nationalId}</td><td>${sub.phone}</td><td>${sub.senderPhone || '-'}</td><td>${imgThumb}</td><td>${statusText}</td><td>${actionBtn}</td></tr>`;
+          tbody.innerHTML += `<tr><td>${index + 1}</td><td>${sub.name}</td><td>${sub.phone}</td><td>${sub.nationalId || '-'}</td><td>${sub.senderPhone || '-'}</td><td>${imgThumb}</td><td>${statusText}</td><td>${actionBtn}</td></tr>`;
         });
       })
       .catch(err => { document.getElementById('adminLoading').style.display = 'none'; alert("فشل تحميل البيانات."); });
     }
 
-    function approveStudent(nationalId) {
+    function approveStudent(phone) {
       if(!confirm("هل أنت متأكد من قبول هذا الطالب للمحاضرة؟")) return;
-      fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "approve", nationalId: nationalId }) }) // تم تصحيحها لـ SCRIPT_URL تلقائياً
-      .catch(err => {});
       
-      fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "approve", nationalId: nationalId }) })
+      fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "approve", phone: phone }) })
       .then(res => res.json())
       .then(response => { alert("تمت الموافقة بنجاح!"); fetchSubscribers(); })
       .catch(err => alert("حدث خطأ أثناء الموافقة."));
